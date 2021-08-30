@@ -22,8 +22,9 @@ java
 	java序列化 对象持久化或在网络中传输
 	java异常 throwable error exception runtimeexception ioexception
 	xio 
-	arraylist扩容
+	arraylist扩容 len + len >> 1 1.5倍 modCount乐观并发控制 静态变量减少初始化成本 ensureCapacity减少扩容成本
 	hashmap不同java版本的区别
+	concrruentHashMap
 	死锁代码
 	sleep()和wait()
 	synchronized原理优化
@@ -42,12 +43,12 @@ java
 	JUC
 	AQS
 	弱引用
-	jvm命令
-	常量池位置
-	对象创建过程
-	TLAB
-	查看堆分代信息
-	分担担保机制
+	jvm命令 jps jstat -gc jmap jstack
+	常量池位置 1.7 方法区 1.8 元空间
+	对象创建过程 类加载 -> 分配空间 -> 准备 -> 对象头填充（8字节的倍数，锁状态标识） -> init
+	TLAB thread local alloction buffer 线程本地分配内存，用于保证对象内存分配时的线程安全性
+	查看堆分代信息 jstat -gc
+	分担担保机制 
 	哪些大对象进老年代
 	垃圾清除算法
 	垃圾回收器
