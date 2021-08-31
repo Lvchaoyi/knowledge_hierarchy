@@ -23,22 +23,23 @@ java
 	java异常 throwable error exception runtimeexception ioexception
 	xio 
 	arraylist扩容 len + len >> 1 1.5倍 modCount乐观并发控制 静态变量减少初始化成本 ensureCapacity减少扩容成本
-	hashmap不同java版本的区别
-	concrruentHashMap
-	死锁代码
-	sleep()和wait()
-	synchronized原理优化
-	CAS
-	volatile
-	内存屏障
-	CPU工作流程
-	JMM
-	ThreadLocal原理
-	线程池参数
-	线程池类型
-	线程池流程
-	线程池问题
-	Runnable Callable区别
+	hashmap不同java版本的区别 1.7 头插 扩容再插 链表+数组 1.8 尾插 链表+数组、红黑树 插了再扩容
+	concrruentHashMap 1.7 总计16个segment上加锁 1.8 entry加锁，并发量提升
+	死锁代码 线程1资源2 -> 资源1 线程2资源1 -> 资源2
+	sleep()和wait() 后者放弃cpu进入等待状态，notify后被唤醒
+	synchronized原理优化 偏向锁（不释放锁） 轻量级锁（CAS+自旋10次） 重量级锁（内核态用户态切换 中断） 锁消除（不予锁定）
+	CAS compare and swap 比较内存中的值和线程预期的原始值是否相同
+	volatile 禁止指令重排 保持内存可见性
+	内存屏障 invalid buffer queue 
+	CPU工作流程 外存 -> 内存 -> 控制器执行指令 -> 读入寄存器 -> 计算 -> 结果放入内存/外存
+	JMM 线程独占内存 共享内存
+	ThreadLocal原理 每个thread内部有一个map，key为threadlocal引用 value为值，保证线程资源的独占性
+	ThreadLocal问题 threadlocalmap线性探测法，为了节省空间，key为弱引用，便于回收，key变null，value还在，thread -> map -> entry -> value强引用链一直存在，需要手动remove
+	线程池参数 核心线程数 最大线程数 队列 饱和策略 
+	线程池类型 fixed：核心线程数=最大线程数 single：核心线程数=1 cache： 
+	线程池流程 核心线程->队列->最大线程
+	线程池问题 任务过多导致OOM
+	Runnable Callable区别 后者有返回结果
 	submit excute
 	JUC
 	AQS
