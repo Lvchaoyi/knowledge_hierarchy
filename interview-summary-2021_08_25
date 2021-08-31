@@ -40,10 +40,10 @@ java
 	线程池流程 核心线程->队列->最大线程
 	线程池问题 任务过多导致OOM
 	Runnable Callable区别 后者有返回结果
-	submit excute
+	submit excute 后者能够通过callable接口的get方法获取返回结果
 	JUC
 	AQS
-	弱引用
+	弱引用 发现就回收，跟强引用比就是少个GC判断对象是否存活的过程，比如threadlocal就用了
 	jvm命令 jps jstat -gc jmap jstack
 	常量池位置 1.7 方法区 1.8 元空间
 	对象创建过程 类加载 -> 分配空间 -> 准备 -> 对象头填充（8字节的倍数，锁状态标识） -> init
