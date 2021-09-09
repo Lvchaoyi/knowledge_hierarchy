@@ -125,7 +125,7 @@ redis
 	分布式解决方案
 	canal
 	kafka
-	订单数据怎么过滤的？kafka的生产者从哪来？
+	订单数据怎么过滤的？kafka的生产者从哪来？ canal server配置来的
 	实际kafka的配置？
 	
 
@@ -133,6 +133,18 @@ redis
 kafka
 
 mongo
+	效率对比 不带id>带id mongo > mysql
+	mmap
+	预分配
+	写操作流程
+	事务
+	索引 B+树 非聚簇索引 recordId 部分索引
+
+
+
+
+
+
 
 linux
 
