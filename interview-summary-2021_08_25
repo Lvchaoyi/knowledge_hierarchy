@@ -134,12 +134,19 @@ kafka
 
 mongo
 	效率对比 不带id>带id mongo > mysql
-	mmap
-	预分配
-	写操作流程
+	mmap 减少了用户进程缓存到kernel缓存再到磁盘的过程，直接将磁盘空间映射到用户地址空间
+	预分配 容易让数据变得集中，地址变得连续
+	写操作流程 写内存直接返回
 	事务
 	索引 B+树 非聚簇索引 recordId 部分索引
 
+ES
+	term dictionary prefix tree position list roaring bit map 跳表
+	写入流程 内存 translog 磁盘
+	深度分页 scroll search_after 相同时间戳
+	删除 标识 合并segment
+	写入 内存 segment可见
+	
 
 
 
