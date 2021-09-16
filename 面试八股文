@@ -1,0 +1,78 @@
+Java了解吗
+	Java里的容器了解吗
+		说一下hashmap的底层结构吧
+		hashmap调用put方法时发生hash冲突如何解决
+		hashmap什么时候会发生扩容 -> 如何扩容的
+
+	Java多线程了解吗
+		Java线程同步的方法
+		synchronized和Lock的区别
+		synchronized锁升级的过程 -> 是否能降级，为什么 -> 说一下CAS的流程
+		synchronized是公平锁还是非公平锁
+		说一下ReentrantLock的底层如何实现的 -> AQS是如何实现的
+
+		ThreadLocal用过吗 -> 应用在哪些地方
+		ThreadLocal的结构是怎样的 -> 为什么会有OOM的问题 -> 为什么会用弱引用
+
+		volatile关键词的作用 -> 可以保证线程安全吗 -> 应用场景
+		MESI协议了解吗
+		内存屏障了解吗
+
+	JVM了解吗
+		说一下JVM的内存结构 -> 程序计数器会出现OOM吗
+		类加载的流程
+		有哪些类加载器 -> 双亲委派机制 -> 新建java.lang.Object可以正常运行吗 -> 为什么
+
+
+MySQL了解吗
+	MySQL的索引了解吗
+		InnoDB的索引的底层结构 -> B树和B+树的区别 -> 查询的时间复杂度
+		聚集索引和非聚集索引的区别
+		建立(a, b)的联合索引 select a,b,c from table where a > 0 and b > 0 需要查询几次索引 -> 如何能够只查一次索引
+		建索引有哪些原则 -> 可以给每个字段建立索引吗
+		InnoDB和MyISAM有哪些区别
+
+	MySQL的事务了解吗
+		事务的隔离级别有哪些 -> InnoDB默认的隔离级别是啥 -> 可重复读的隔离级别下会产生幻读的问题吗 -> 如何避免幻读 -> MVCC是如何实现的 -> bin log redo log undo log 有什么区别 -> 两阶段提交了解吗 -> WAL机制
+
+	线上遇到哪些问题
+		慢查询如何定位
+		深度分页问题怎么解决
+
+Redis了解吗
+	redis为什么高效 -> redis是单线程还是多线程 -> epoll和select的区别
+
+	redis的基本数据类型说一下 -> redis里的字符串做了什么优化 -> zset的底层结构是什么 -> 跳表的结构说一下，搜索的复杂度是多少 -> 为什么不用B+树
+
+	redis数据会丢失吗 -> 有哪些持久化机制 -> AOF和RDB的区别 -> RDB会阻塞redis查询吗
+
+	redis作为一个key-value的存储的内存数据库，底层的数据存储结构是什么样的 -> hash表过大会发生什么 -> rehash的过程是怎么样的
+
+	redis为什么禁用keys -> scan和keys的区别 -> scan有什么问题
+
+
+操作系统了解吗
+	进程和线程的区别 -> 协程了解吗 -> 进程的通信方式 -> 哪种方式最高效
+	DMA是什么 -> 零拷贝是什么 -> sendfile的流程说一下
+
+
+计算机网络了解吗
+
+	浏览器中输入www.baidu.com，整个流程发生了什么
+
+	tcp了解吗
+		说一下tcp建立连接和断开链接的过程 -> time_wait过多的原因 -> syn攻击如何预防
+	HTTP了解吗
+		HTTP的传输层是tcp还是udp -> 可以用udp吗
+		HTTP1.1和2.0的区别
+		HTTPS建立链接的流程
+
+算法数据结构了解吗
+	说一下快排的流程
+
+
+
+
+
+
+
