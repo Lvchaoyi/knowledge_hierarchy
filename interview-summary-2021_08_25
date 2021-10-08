@@ -42,8 +42,8 @@ java
 	线程池问题 任务过多导致OOM
 	Runnable Callable区别 后者有返回结果
 	submit excute 后者能够通过callable接口的get方法获取返回结果
-	JUC
-	AQS
+	JUC java并发包 重点：atomicxxx cas + volatile  semaphore xxx aqs
+	AQS clh抽象队列 双向链表
 	弱引用 发现就回收，跟强引用比就是少个GC判断对象是否存活的过程，比如threadlocal就用了
 	jvm命令 jps jstat -gc jmap jstack
 	常量池位置 1.7 方法区 1.8 元空间
@@ -76,6 +76,8 @@ java
 	http不同版本的区别 1.1：409，缓存，长链接 2.0：header缩小，多路请求复用 3.0：udp quic
 	https的加密过程 对称加密 -> 非对称加密 加密 对称加密的秘钥 证书里是私钥加密之后的公钥，浏览器自带的公钥可以解密出来，解密之后需要验签和验证域名，然后再对称加密
 	rpc是啥协议
+	跨域问题
+	正向代理 反向代理
 
 
 操作系统
