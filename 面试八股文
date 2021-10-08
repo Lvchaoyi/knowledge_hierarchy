@@ -39,7 +39,7 @@ MySQL了解吗
 	MySQL的索引了解吗
 		InnoDB的索引的底层结构 -> B树和B+树的区别 -> 查询的时间复杂度
 		聚集索引和非聚集索引的区别
-		建立(a, b)的联合索引 select a,b,c from table where a > 0 and b > 0 需要查询几次索引 -> 如何能够只查一次索引
+		建立(a, b)的联合索引 select a,b,c from table where a = 0 and b > 0 需要查询几次索引 -> 如何能够只查一次索引
 		建索引有哪些原则 -> 可以给每个字段建立索引吗
 		InnoDB和MyISAM有哪些区别
 
@@ -60,6 +60,9 @@ Redis了解吗
 	redis作为一个key-value的存储的内存数据库，底层的数据存储结构是什么样的 -> hash表过大会发生什么 -> rehash的过程是怎么样的
 
 	redis为什么禁用keys -> scan和keys的区别 -> scan有什么问题
+
+spring了解吗
+	说一下spring中的设计模式吧
 
 
 操作系统了解吗
