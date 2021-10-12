@@ -130,6 +130,10 @@ redis
 	kafka
 	订单数据怎么过滤的？kafka的生产者从哪来？ canal server配置来的
 	实际kafka的配置？
+	canal的角色 监听的是库还是表 mysql的整个bin log 但是可以过滤筛选 发出的消息如何保证有序 消息格式是怎样的 一条消息多大
+	kafka 配置如何 多少个topic 多少个partition 如何保证接受的消息有序 
+	订单系统如何设计
+	数量大了怎么办
 	
 
 
