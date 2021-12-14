@@ -1,0 +1,52 @@
+Mysql
+		查询 
+				exists in 
+				内联 外联
+				深度分页
+						回表
+						索引下推
+						explain
+								file sort
+								using where
+								using index 
+								using index condition
+		并发
+				锁
+						临键锁
+								临键锁作用范围
+						意向锁作用
+								插入意向锁作用
+						MVCC
+
+redis
+
+kafka
+
+zk
+
+网络
+
+java
+
+spring
+
+mongo
+
+es
+
+操作系统
+
+linux
+
+web服务器
+
+设计模式
+
+大数据
+
+业务场景
+
+高并发
+
+算法
+
