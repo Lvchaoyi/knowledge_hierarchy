@@ -18,7 +18,57 @@ Mysql
 								插入意向锁作用
 						MVCC
 
-redis
+redis 4
+		特点
+		类型
+				str
+						特点
+				list
+						消息队列
+								缺点
+				set
+
+				zset
+						跳表
+								场景
+				hash
+				布隆过滤器
+						原理
+								场景
+				数据扩容
+						渐进式hash
+
+		持久化
+				rdb
+						save
+						bgsave
+				aof
+						重写
+				生产场景
+		分布式锁
+				redission
+				setnx
+				lua
+		高可用
+				主从
+				哨兵
+				集群
+						一致性hash
+		数据一致性
+				cache aside
+				read through
+		淘汰策略
+
+		命令
+				sync
+				fsync
+				keys
+				scan
+				事务
+		缓存问题
+				雪崩
+				击穿
+				穿透
 
 kafka
 
@@ -28,11 +78,45 @@ zk
 
 java
 
-spring
+spring 3
+		aop
+				动态代理
+						jdk
+						cglib
+						aspectj
+		ioc
+				注入方式
+						设计模式
+						循环依赖
+						bean
+								作用域
+								生命周期
+		注解
+				transactional
+						传播机制
+
+		tomcat请求流程
+		springboot
+				特点/理解
+				启动流程
+		springmvc请求流程
 
 mongo
+		特点/痛点
+		技术选型
+		高可用
+				主从
+				副本集
+				分片
+				问题
+		索引
+				结构
+		效率
+				对比关系型数据库
+
 
 es
+
 
 操作系统
 
@@ -40,7 +124,17 @@ linux
 
 web服务器
 
-设计模式
+设计模式 2
+		单例
+		工厂
+		构造者
+		代理
+		装饰器
+		适配器
+		责任链
+		观察者
+		模板方法
+		策略
 
 大数据
 
