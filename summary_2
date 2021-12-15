@@ -71,10 +71,54 @@ redis 4
 				穿透
 
 kafka
+	效率高原因
+		零拷贝
+		顺序写
+	消息丢失
+		producer丢
+		broker丢
+		consumer丢
+	消息乱序
+	重复消费
+	高可用
+	线上问题
+
 
 zk
+	节点
+		持久性节点
+		临时节点
+
+	zab
+		消息广播
+		崩溃恢复
+	分布式锁
+
 
 网络
+	加密算法
+		RSA
+		DES
+		AES
+	网络攻击
+	tcp
+		握手
+			半连接
+			sync攻击
+		挥手
+			close wait
+			time wait
+				2msl
+		拥塞控制
+		滑动窗口
+		粘包
+	http
+		状态码
+		https加密
+		无状态解决方案
+			跨域
+			同源
+		划分tcp报文
 
 java
 
