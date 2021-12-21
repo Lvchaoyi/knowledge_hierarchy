@@ -30,48 +30,80 @@ redis 4
 				IO多路复用
 
 		类型
-				str
-					特点
-						获取长度O(1)
-						拼接时不会溢出
-						兼容二进制数据
-					场景
-						session
-						计数器
+			str
+				特点
+					获取长度O(1)
+					拼接时不会溢出
+					兼容二进制数据
+				场景
+					session
+					计数器
 
-				list
-						消息队列
-								缺点
-				set
+			list
+				结构
+				场景
+					消息队列
+						缺点
+							持久化
+							只适用于单消费者
+							单消费者的单点问题导致消息堆积
+			set
+				结构
+					hash
+					inset
 
-				zset
-						跳表
-								场景
-				hash
-				布隆过滤器
-						原理
-								场景
-				数据扩容
-						渐进式hash
+			zset
+				结构
+					跳表
+						为啥不用b树
+				场景
+					延时队列
+					排行榜
+			hash
+				底层结构
+			布隆过滤器
+				原理
+				缺点
+					可能会误伤正常数据
+					但是一定不会放过异常数据
+				场景
+					垃圾邮件过滤器
+			数据扩容
+				渐进式hash
 
 		持久化
-				rdb
-						save
-						bgsave
+			rdb
+				save/bgsave
+			aof
+				频率
+					每秒写
+					每次写
+					os判断写入
+				重写
+					混合持久化
+			重启是用aof还是rdb 优先aof
+			生产场景
 				aof
-						重写
-				生产场景
 		分布式锁
-				redission
-				setnx
-				lua
+			setnx
+				原子性
+				锁被其他线程释放
+				锁超时
+				锁释放的原子性保证
+					lua
+			redission
+				watch dog
+			red lock
+				作用
 		高可用
-				主从
-				哨兵
-				集群
-						一致性hash
+			主从
+				同步流程
+			哨兵
+				作用
+			集群
+				一致性hash
 		数据一致性
-				cache aside
+				cache aside (todo)
 				read through
 		淘汰策略
 
@@ -82,9 +114,30 @@ redis 4
 				scan
 				事务
 		缓存问题
-				雪崩
-				击穿
-				穿透
+			雪崩
+				解决方案
+					事前
+						主从高可用
+						内存淘汰策略
+						随机过期时间
+					事中
+						限流
+						降级
+					事后
+						持久化恢复
+
+			击穿
+				解决
+					永不过期
+					互斥锁，一次只有一个线程进入数据库
+					hystrix资源隔离
+			穿透
+				定义
+				方案
+					参数校验
+					布隆过滤器
+					value设置为null缓存无效key
+
 
 kafka
 	效率高原因
