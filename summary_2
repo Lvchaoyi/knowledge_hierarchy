@@ -142,15 +142,45 @@ redis 4
 kafka
 	效率高原因
 		零拷贝
-		顺序写
+			sendfile
+			mmap
+		缓存写
+			page cache
+	流程
+
 	消息丢失
 		producer丢
+			场景
+				网络波动
+			解决方案
+				ack+重试
 		broker丢
+			场景
+				持久化时宕机
+			解决方案
+				ack设置为-1，至少写入leader的磁盘
 		consumer丢
+			场景
+				网络
+				宕机
+			解决
+				offset commit设置为手动
 	消息乱序
+		patition是否能保证消息顺序
+		解决
+			partition设置为和consumer相等
+			consumer多线程hash分片处理
 	重复消费
+		消息幂等性
+		分布式锁
+		执行记录表
+
 	高可用
+
 	线上问题
+		手动提交但是默认异步提交
+	生产环境
+
 
 
 zk
@@ -291,6 +321,24 @@ es 2
 	进程线程协程
 	cpu执行
 	io
+		分类
+			同步阻塞io
+			同步非阻塞io
+			多路复用io
+			异步io
+		定义
+			阻塞非阻塞
+			同步异步
+			dma
+		零拷贝
+			mmap + write
+			sendfile
+			场景
+				nginx
+				kafka
+					transferTo
+				mongodb
+				netty
 	内存管理
 
 linux 2
@@ -303,16 +351,16 @@ web服务器
 
 
 设计模式 2
-		单例
-		工厂
-		构造者
-		代理
-		装饰器
-		适配器
-		责任链
-		观察者
-		模板方法
-		策略
+	单例
+	工厂
+	构造者
+	代理
+	装饰器
+	适配器
+	责任链
+	观察者
+	模板方法
+	策略
 
 大数据 2
 	hbase
