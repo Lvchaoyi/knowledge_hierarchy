@@ -421,8 +421,13 @@ web服务器
 			静态缓存
 			分布式缓存
 			cdn
+		策略
+			cache aside
+			read/write through
+			write back
 		
 	消息队列
+
 	分布式服务
 	项目维护
 	实际场景
