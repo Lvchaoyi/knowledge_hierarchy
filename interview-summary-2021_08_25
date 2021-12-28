@@ -129,11 +129,14 @@ redis
 	canal
 	kafka
 	订单数据怎么过滤的？kafka的生产者从哪来？ canal server配置来的
-	实际kafka的配置？
-	canal的角色 监听的是库还是表 mysql的整个bin log 但是可以过 滤发出的消息如何保证有序 消息格式是怎样的 一条消息多大
-	kafka 配置如何 多少个topic 多少个partition 如何保证接受的消息有序 
-	订单系统如何设计 表设计问题 状态流转问题 事务一致性问题 
-	数量大了怎么办
+	实际kafka的配置？ 6 partition 有没主从 不知道
+	canal的角色 监听的是库还是表 mysql的整个bin log 但是可以过 滤发出的消息 表级别过滤 如何保证有序 消息没有强关联不需要有序，而且每个partition中的消息也是顺序的 消息格式是怎样的 一条消息多大
+	kafka 配置如何 多少个topic 一个topic，后续履约流程每个流程一个消费者组，消息订阅发布模式 多少个partition 反正>=3 如何保证接受的消息有序 消费者concurrency和partition保持一致
+	订单系统如何设计 
+	表设计问题 订单id 商品快照 其他信息
+	状态流转问题 支付 开课 退款
+	事务一致性问题 spring事务 单库事务 后续服务拆分就需要分布式事务 seata/ JTA
+	数量大了怎么办 分库分表 
 	
 
 

@@ -2,7 +2,7 @@ Java了解吗
 	Java里的容器了解吗
 		说一下hashmap的底层结构吧
 		hashmap调用put方法时发生hash冲突如何解决
-		hashmap什么时候会发生扩容 -> 如何扩容的 -> 多线程同时操作hashmap会发生什么问题 -> 为什么会出现循环链表 -> 如果要保证线程安全应该用什么容器 -> 为什么concurrenthashmap是线程安全的 -> 1.8版本对concurrenthashmap做了哪些优化（1.7和1.8的concurrenthashmap保证线程安全的机制有什么不同） -> cas、volatile、synchronized等多线程问题
+		hashmap什么时候会发生扩容 -> 如何扩容的 -> 多线程同时操作hashmap会发生什么问题 -> 为什么会出现循环链表 -> 如果要保证线程安全应该用什么容器 -> 为什么concurrenthashmap是线程安全的 -> 1.8版本对concurrenthashmap做了哪些优化（1.7和1.8的concurrenthashmap保证线程安全的机制有什么不同） -> cas、volatile、synchronized等多线程问题 1.7hashmap用了lock吗 
 
 
 	Java多线程了解吗
@@ -44,7 +44,7 @@ MySQL了解吗
 		InnoDB和MyISAM有哪些区别
 
 	MySQL的事务了解吗
-		事务的隔离级别有哪些 -> InnoDB默认的隔离级别是啥 -> 可重复读的隔离级别下会产生幻读的问题吗 -> 如何避免幻读 -> MVCC是如何实现的 -> bin log redo log undo log 有什么区别 -> 两阶段提交了解吗 -> WAL机制
+		事务的隔离级别有哪些 -> InnoDB默认的隔离级别是啥 -> 可重复读的隔离级别下会产生幻读的问题吗 -> 如何避免幻读 -> MVCC是如何实现的 -> bin log redo log undo log 有什么区别 -> 两阶段提交了解吗 -> WAL机制 幻读?
 
 	线上遇到哪些问题
 		慢查询如何定位
@@ -55,11 +55,12 @@ Redis了解吗
 
 	redis的基本数据类型说一下 -> redis里的字符串做了什么优化 -> zset的底层结构是什么 -> 跳表的结构说一下，搜索的复杂度是多少 -> 为什么不用B+树
 
-	redis数据会丢失吗 -> 有哪些持久化机制 -> AOF和RDB的区别 -> RDB会阻塞redis查询吗
+	redis数据会丢失吗 -> 有哪些持久化机制 -> AOF和RDB的区别 -> RDB会阻塞redis查询吗 redis 6.0
 
 	redis作为一个key-value的存储的内存数据库，底层的数据存储结构是什么样的 -> hash表过大会发生什么 -> rehash的过程是怎么样的
 
 	redis为什么禁用keys -> scan和keys的区别 -> scan有什么问题
+
 
 spring了解吗
 	说一下spring中的设计模式吧
