@@ -304,9 +304,95 @@ zk
 
 java 8
 	集合
+		list
+			arraylist
+				参数
+					容量
+					静态数组
+					modCount
+				扩容 1.5
+				并发
+					快速失败
+						modcount
+				RandomAccess
+				Iterator
+			linkedlist
+				对比
+					空间占用
+			vector
+		map
+			hashmap
+				优化
+					结构
+					hashcode
+					插入
+					resize
+				结构
+				扩容
+				并发
+					循环链表
+					元素丢失
+					脏读
+			concurrrenthashmap
+				78区别
+
+				hashtable区别
+		set
+			hashset
+		queue
+			blockingqueue
+
 	多线程
+		Thread
+			方法
+				sleep
+				wait
+				notify
+				notifyAll
+			创建方式
+				Runnable
+				new
+				线程池
+		ThreadPoolExecutor
+			核心参数
+		synchronized
+		reentrantlock
+		volatile
+		juc
+			aqs
 	jvm
+		类加载
+			双亲委派
+				打破
+		结构
+			方法区/元空间
+			堆
+			栈
+
+		gc
+			垃圾回收器
+				parallel
+				serial
+				cms
+				g1
+				zgc
+			回收算法
+				复制
+				标记回收
+				标记清除
+				分代
+			优化
+				命令
+					jstat -gc
+					jstack
+
 	异常
+		编译错误
+
+		运行时异常
+			io
+
+		不可检测异常
 
 
 
