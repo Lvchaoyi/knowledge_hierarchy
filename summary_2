@@ -341,6 +341,9 @@ java 8
 			hashset
 		queue
 			blockingqueue
+				array
+				linked
+				synchronous
 
 	多线程
 		Thread
@@ -355,69 +358,202 @@ java 8
 				线程池
 		ThreadPoolExecutor
 			核心参数
+			适用场景
+				io密集型
+				cpu密集型
+			executors类型
+			预热
 		synchronized
+			原理
+				monitor
+				ACC
+			锁优化
+				偏向锁
+				轻量级锁
+				重量级锁
+				锁消除
+				锁粗化
 		reentrantlock
+			原理
+		jmm
+		threadlocal
+			结构
+				threadlocalmap
+			OOM
+				弱引用
+				解决
+					手动remove
+			应用
+				数据库链接
 		volatile
+			作用
+				有序性
+				可见性
+			MESI协议
+			总线风暴
+			内存屏障
+
+		cas
+			ABA问题
+			原子性
+			是否线程安全
+			+volatile和synchronized区别
 		juc
 			aqs
+				状态值
+				结构
+				公平锁和非公平锁
+				队列中的节点一定是按顺序的吗
+				共享锁排他锁
+			应用
+				semaphore
+				countdownlatch
+				cyclicbarrier
+
 	jvm
 		类加载
-			双亲委派
-				打破
+			流程
+				加载
+				链接
+				初始化
+				卸载
+			类加载器
+				分类
+				双亲委派
+					打破
+						tomcat
+						jdbc
+					实现
+						重写load
+		对象加载
+			流程
+				类检查
+				分配内存
+				初始化
+				init
+			结构
+				对象头	
+					markword
+					klass
+
+				数据
+				对齐填充
 		结构
-			方法区/元空间
-			堆
-			栈
+			共有
+				方法区/元空间
+				堆
+			私有
+				栈
+				程序计数器
 
 		gc
 			垃圾回收器
 				parallel
 				serial
 				cms
+					缺点
+						碎片
+						cpu资源敏感
+						浮动垃圾
+					三色标记法
 				g1
+					特点
+						可预测
+						可用空间大
+					区别
+						标记整理
+						筛选回收
+						时间可预测
+					调优
+						暂停时间
+						年轻年老代比例
 				zgc
+					着色指针
+					读屏障
 			回收算法
 				复制
 				标记回收
 				标记清除
 				分代
+					新生老年比例
+			可达性分析
+				引用计数
+				可达性分析
 			优化
 				命令
+					jps
 					jstat -gc
 					jstack
+				io cpu占用过高
+					top查进程
+					ps查线程
+					jstack -l pid看堆栈 查对应线程
+					定位代码
 
 	异常
 		编译错误
-
+			必须改代码
 		运行时异常
+
+			可预测，必须try catch
 			io
 
 		不可检测异常
+			不可预测
+			npe
+			outofbound
 
 
 
 spring 3
-		aop
-				动态代理
-						jdk
-						cglib
-						aspectj
-		ioc
-				注入方式
-						设计模式
-						循环依赖
-						bean
-								作用域
-								生命周期
-		注解
-				transactional
-						传播机制
+	bean
+		生命周期
+			实例化
+			赋值
+			初始化
+			销毁
+	beanfactory
+	applicationContext
+	注解
+		transactional
+			传播机制
+			失效
+	aop
+		动态代理
+			jdk
+			cglib
+			aspectj
+	ioc
+		注入方式
+			设计模式
+			循环依赖
+			bean
+					作用域
+					生命周期
+	注解
+			transactional
+					传播机制
 
-		tomcat请求流程
-		springboot
-				特点/理解
-				启动流程
-		springmvc请求流程
+	tomcat请求流程
+		请求 connector container servetlet
+	springboot
+			特点/理解
+			启动流程
+				扫描spring组件
+				获取需要自动装配类名
+				过滤不需要装配的类
+				注册到ioc容器中
+				初始化listner
+				发布时间
+				ioc创建
+				发布refresh
+				启动成功
+	springmvc请求流程
+		请求地址
+		dispatcher
+		映射到controller
+		返回视图文件
+
 
 mongo 2
 		特点/痛点
