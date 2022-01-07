@@ -1,64 +1,89 @@
 Mysql 2
-		查询 
-				exists in 
-				内联 外联
-				深度分页
-						回表
-						索引下推
-						explain
-								file sort
-								using where
-								using index 
-								using index condition
-		并发
-				锁
-						临键锁
-								临键锁作用范围
-						意向锁作用
-								插入意向锁作用
-						MVCC
+	查询 
+		exists in 前者有结果返回就行，复杂度O(n),后者会有一个筛选过程时间复杂度O(nm)
+		左联 右联 内联 外联 左边全 右边全。。。
+		深度分页 禁用跳页 带上上一条id 带上id查询  ES查id
+			回表 不在索引中的字段需要去主键索引中查找
+			索引下推 5.6的新特性，order by或者辅助索引之类的条件直接可以在辅助索引中完成
+			explain
+				file sort 文件排序
+				using where 回表
+				using index 只用索引
+				using index condition 索引下推
+	并发
+		锁
+			乐观锁 MVCC算是吧，自定义可以通过判断版本号
+			悲观锁 一般意义上的锁
+			读锁
+			写锁
+			行锁 锁定一行
+			范围锁 锁定一个范围
+			表锁 锁表
+			临键锁
+				临键锁作用范围 gap lock + record lock 一般就近找一个对应的记录，进行锁定
+			意向锁作用
+				插入意向锁作用 一般是表级别的锁 用于减少表锁依次对行锁的判断
+			MVCC
+				作用范围
+					未提交读
+					可重复读
+				undo log
+				版本链
+				视图
+				transaction_id
 
-		优化
-			慢查询
-				show processlist
-				explain
-				索引优化
-				强制索引
-				避免回表
-			原则
-				负向查询
-				精确匹配
-				建立索引
-				索引下推
-			大表优化
-				拆分
-				读写分离
-				缓存
-				查询语句优化
-		架构
-			日志
-				binlog
-				redolog
-				undolog
-				slowlog
-				relaylog
-				两阶段提交
-			组件
-				链接器
-				分析器
-				优化器
-				查询器
-			流程
-				建立连接
-				语法分析
-				执行查询
-					磁盘
-					内存
-		分布式系统
-			主从
-				复制
-					宕机 半同步复制
-					延时 并行复制
+	优化
+		慢查询
+			show processlist
+			explain
+			索引优化
+			强制索引
+			避免回表
+		原则
+			负向查询
+			精确匹配
+			建立索引
+			索引下推
+		大表优化
+			拆分
+				垂直
+				水平
+			读写分离
+				主从
+					bin log
+					relay log
+					单线程
+			缓存
+				卵用没有
+				8.0废弃
+	架构
+		日志
+			binlog 主从同步
+				row innodb特有
+				statement server实现
+				主库宕机
+					半同步复制
+			redolog 减少随机写，宕机恢复 缓冲区满写磁盘
+			undolog 用于回滚
+			slowlog 开启之后会记录超过时间的查询
+			relaylog 从节点从bin log同步之后的log
+			两阶段提交 redo log prepare bin log redo log commit 
+		组件
+			链接器 建立链接
+			分析器 语句分析
+			优化器 语句优化
+			查询器 执行查询
+		流程
+			建立连接
+			语法分析
+			执行查询
+				磁盘
+				内存
+			分布式系统
+				主从
+					复制
+						宕机 半同步复制 操作必定写完从库返回
+						延时 并行复制 同时复制多个
 
 redis 4
 		特点
@@ -683,8 +708,39 @@ web服务器
 
 大数据 2
 	hbase
+		结构
+			hregion server 处理请求转发到region
+			zk 记录元数据
+			hmaster 哨兵
+			hregion 存储结构
+		概念
+			row
+			col
+			col family
+			rowkey
+		场景
+			海量
+			简单查询
+		区别
+
 	spark
+		概念
+			rdd
+				transformation 缓存结构
+				action 生成文件
+			job action对应
+			stage 一个job多个stage
+			task 最小任务
+		区别
+			支持操作更复杂
+			中间结果缓存
+			多进程多线程
 	hadoop
+		结构
+			namenode
+			datanode
+			mapreduce
+			yarn
 	flink
 
 业务场景 2
