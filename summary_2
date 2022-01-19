@@ -86,137 +86,173 @@ Mysql 2
 						延时 并行复制 同时复制多个
 
 redis 4
-		特点
-			效率高
-				内存读写
+	特点
+		效率高
+			内存读写
+				磁盘写
+					寻道
 
-				IO多路复用
+			IO多路复用
+				select
+				poll
+				epoll
 
-		类型
-			str
-				特点
-					获取长度O(1)
-					拼接时不会溢出
-					兼容二进制数据
-				场景
-					session
-					计数器
+	类型
+		str
+			特点
+				获取长度O(1)
+				拼接时不会溢出
+				兼容二进制数据
+			场景
+				session
+				计数器
+					incr
+						原子性
+							扣减库存
 
-			list
-				结构
-				场景
-					消息队列
-						缺点
-							持久化
-							只适用于单消费者
-							单消费者的单点问题导致消息堆积
-			set
-				结构
-					hash
-					inset
+		list
+			结构
+			场景
+				消息队列
+					缺点
+						持久化
+						只适用于单消费者
+						单消费者的单点问题导致消息堆积
+		set
+			结构
+				hash
+				inset
 
-			zset
-				结构
-					跳表
-						为啥不用b树
-				场景
-					延时队列
-					排行榜
-			hash
-				底层结构
-			布隆过滤器
-				原理
-				缺点
-					可能会误伤正常数据
-					但是一定不会放过异常数据
-				场景
-					垃圾邮件过滤器
-			数据扩容
-				渐进式hash
+		zset
+			结构
+				跳表
+					为啥不用b树
+						实现简单
+						内存不敏感
+					随机化
+			场景
+				延时队列
+				排行榜
+		hash
+			底层结构
+		布隆过滤器
+			原理
+			缺点
+				可能会误伤正常数据
+				但是一定不会放过异常数据
+			场景
+				垃圾邮件过滤器
+		数据扩容
+			渐进式hash
 
-		持久化
-			rdb
-				save/bgsave
+	持久化
+		rdb
+			save/bgsave
+		aof
+			频率
+				每秒写
+				每次写
+				os判断写入
+			重写
+				混合持久化
+		重启是用aof还是rdb 优先aof
+		生产场景
 			aof
-				频率
-					每秒写
-					每次写
-					os判断写入
-				重写
-					混合持久化
-			重启是用aof还是rdb 优先aof
-			生产场景
-				aof
-		分布式锁
-			setnx
-				原子性
-				锁被其他线程释放
-				锁超时
-				锁释放的原子性保证
-					lua
-			redission
-				watch dog
-			red lock
+	分布式锁
+		setnx
+			原子性
+			锁被其他线程释放
+			锁超时
+			锁释放的原子性保证
+				lua
+		redission
+			watch dog：定期续锁
+		red lock
+			作用：分布式系统中主从节点切换导致的锁超时问题
+	高可用
+		主从
+			同步流程
+				全量
+					fork子进程
+					rdb传输
+					从节点删除数据
+					同步数据加载快照
+				增量
+			offset
+			runid
+		哨兵
+			作用
+				故障监控
+				故障转移
+				节点选举
+				配置中心
+		集群
+			一致性hash
 				作用
-		高可用
-			主从
-				同步流程
-			哨兵
-				作用
-			集群
-				一致性hash
-		数据一致性
-				cache aside (todo)
-				read through
-		淘汰策略
+					防止数据迁移过大
+				数据漂移
 
-		命令
-				sync
-				fsync
-				keys
-				scan
-				事务
-		缓存问题
-			雪崩
-				解决方案
-					事前
-						主从高可用
-						内存淘汰策略
-						随机过期时间
-					事中
-						限流
-						降级
-					事后
-						持久化恢复
+	数据一致性
+			cache aside
+				更新db，删除缓存
+			read/write through
+				更新缓存，更新db，同个事务
+			write back
+				惰性批量写入
+				page cache
 
-			击穿
-				解决
-					永不过期
-					互斥锁，一次只有一个线程进入数据库
-					hystrix资源隔离
-			穿透
-				定义
-				方案
-					参数校验
-					布隆过滤器
-					value设置为null缓存无效key
+	淘汰策略
+
+	命令
+		sync
+		fsync
+		keys
+		scan
+		事务
+	缓存问题
+		雪崩
+			解决方案
+				事前
+					主从高可用
+					内存淘汰策略
+					随机过期时间
+				事中
+					限流
+					降级
+				事后
+					持久化恢复
+
+		击穿
+			解决
+				永不过期
+				互斥锁，一次只有一个线程进入数据库
+				hystrix资源隔离
+		穿透
+			定义
+			方案
+				参数校验
+				布隆过滤器
+				value设置为null缓存无效key
 
 
 kafka
 	效率高原因
 		零拷贝
-			sendfile
-			mmap
+			sendfile 磁盘 内核  网卡
+			mmap 磁盘 用户内存（映射过了）
 		缓存写
 			page cache
+				不适合大文件
 	流程
+		producer -> (topic, partition, key) partition -> follower -> consumer消费提交offset
+
 
 	消息丢失
 		producer丢
 			场景
 				网络波动
 			解决方案
-				ack+重试
+				ack -1 + 自带重试
 		broker丢
 			场景
 				持久化时宕机
@@ -230,6 +266,7 @@ kafka
 				offset commit设置为手动
 	消息乱序
 		patition是否能保证消息顺序
+		reblance
 		解决
 			partition设置为和consumer相等
 			consumer多线程hash分片处理
@@ -239,10 +276,14 @@ kafka
 		执行记录表
 
 	高可用
-
+		2.8之前zk zab协议 协调节点的一致性
+		之后Kraft 下线，选举相关
 	线上问题
 		手动提交但是默认异步提交
+		poll时间过长主观下线之后反复reblance导致重复消费
 	生产环境
+		6 partition 3 consumer
+		2 replica
 
 
 
