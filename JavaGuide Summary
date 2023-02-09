@@ -1,2 +1,47 @@
 JavaGuide Summary
 
+Java
+	基础
+		概念
+			JDK/JRE
+			编译/解释
+			字节码
+			AOT
+		基本数据类型
+			包装类型缓存机制
+			自动装箱拆箱
+			精度丢失
+			bigdecimal
+
+		面向对象
+			浅拷贝/深拷贝
+			==/equals()
+			hashcode()
+			String/StringBffer/StringBuilder
+			String不可变
+			String +/常量折叠
+		异常
+			Throwable常用方法
+			try with resources
+
+		泛型
+			泛型应用
+		注解
+			注解解析方式
+		SPI
+			SPI/API
+		序列化
+			定义
+			序列化协议
+		IO
+			BIO/AIO/NIO
+		*汇总*
+			值传递
+			序列化协议
+			代理模式
+			bigdecimal原理
+			Unsafe类
+			SPI操作
+			语法糖的坑
+
+
