@@ -111,7 +111,87 @@ Java
 				CountDownLatch
 				CyclicBarrier
 		*重要*
-			
+			乐观锁/悲观锁
+				实现/版本号/CAS
+				存在问题/ABA
+			JMM
+				CPU模型
+				指令重排
+				JMM模型/happens-before
+				并发编程
+			线程池
+				Executor
+				ThreadPoolExecutor
+				FixedExecutor/SingleThreadExecutor/CacheThreadPool
+				ScheduledThreadPoolExecutor
+				线程池大小
+				使用场景
+				实践
+			并发容器
+				ConcurrentHashMap
+				CopyOnWriteArrayList
+				ConcurrentLinkedQueue
+				BlockingQueue
+				ConcurrentSkipListMap
+			AQS
+				原理
+				Semaphore/CountDownLatch/CyclicBarrier
+			Atomic
+				原理
+				应用场景？
+			ThreadLocal
+				数据结构
+				内存泄漏
+				hash
+				set/get
+				过期key
+				扩容
+				InheritableThreadLocal
+				实践
+			CompletableFuture
+	JVM
+		内存区域
+			运行时数据区
+				程序计数器
+				Java虚拟机栈
+				本地方法栈
+				堆
+				方法区
+				运行时常量池
+				字符串常量池
+				直接内存
+			HotSpot对象
+				创建
+				内存布局
+				访问定位
+		垃圾回收
+			堆空间
+			内存分配回收
+			死亡对象判断
+			垃圾收集算法
+			垃圾收集器
+		类文件结构
+			class结构
+		类加载过程
+			类生命周期
+			加载流程
+			卸载
+		类加载器
+			双亲委派
+			自定义类加载器
+		JVM参数
+			堆内存相关
+			垃圾收集相关
+			OOM
+		JVM调优
+		JDK工具
+			命令行工具
+			可视化分析工具
+	Java新特性
+		
+
+
+
 
 
 
