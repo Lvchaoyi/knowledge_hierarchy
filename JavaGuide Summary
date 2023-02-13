@@ -43,5 +43,75 @@ Java
 			Unsafe类
 			SPI操作
 			语法糖的坑
+	集合
+		list
+			ArrayList/Vector
+			randomAccess
+		Set
+			HashSet/LinkedHashSet/TreeSet
+		Queue
+			Queue/Deque
+			ArrayDeque/LinkedList
+			PriorityQueue
+		Map
+			HashMap/HashTable
+			HashMap/TreeMap
+			HashSet
+			HashMap底层实现/长度2^n/遍历方式/死锁/线程安全
+			HashTable/ConcrruentHashMap
+		注意事项
+			判空
+			转map
+			遍历
+			fail fast
+			集合转数组
+			数组转集合
+	源码
+		IO
+			设计模式
+				装饰器
+				适配器
+				工厂
+				观察者
+			IO模型
+				BIO
+				AIO
+				NIO
+		并发
+			进程/线程/协程
+			多线程
+			线程生命周期
+			上下文切换
+			死锁
+			锁
+				乐观锁/悲观锁
+				CAS
+			JMM
+			volatile
+				可见性
+				禁止指令重排
+				无原子性
+			synchronized
+				原理
+				优化
+				synchronized/volatile
+				synchronized/reentrantLock
+			ThreadLocal
+				原理
+				风险
+			Atomic
+			线程池
+				参数
+				饱和策略
+				原理
+				大小设置
+			AQS
+				原理
+				Semaphore
+				CountDownLatch
+				CyclicBarrier
+		*重要*
+			
+
 
 
