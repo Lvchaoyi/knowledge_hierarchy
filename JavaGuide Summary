@@ -190,6 +190,62 @@ Java
 	Java新特性
 		
 
+计算机基础
+	网络
+		常见面试题
+			TCP/UDP
+				区别
+				适用场景
+			HTTP
+				一次请求过程
+				HTTP保存用户状态
+				URI/URL
+			ARP
+				MAC
+				工作原理
+		重要
+			OSI
+			TCP/IP
+				应用层
+				传输层
+				网络层
+				网络接口层
+			应用层协议
+				HTTP
+				Telnet
+				POP3
+				SMTP
+				FTP
+				SSH
+			HTTP
+			HTTPS
+				TLS
+				SSL
+			HTTP版本
+				1.0
+				1.1
+				2.0
+				3.0
+			HTTP状态码
+			TCP建立连接
+				三次握手
+				四次挥手
+			TCP可靠性
+				流控
+				拥塞控制
+				ARQ协议
+			ARP协议
+	操作系统
+		常见面试题
+			基础
+				操作系统定义
+				系统调用
+			进程/线程
+				
+		Linux
+
+
+
 
 
 
