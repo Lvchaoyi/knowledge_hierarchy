@@ -40,7 +40,10 @@ Java
 		IO
 			BIO/AIO/NIO
 		*汇总*
-			值传递
+			值传递 
+				java中基本类型是值的复制，引用类型是地址的复制（复制不是同一份）
+				https://www.zhihu.com/question/31203609/answer/576030121
+
 			序列化协议
 			代理模式
 			bigdecimal原理
