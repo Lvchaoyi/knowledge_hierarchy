@@ -46,10 +46,30 @@ Java
 
 			序列化协议
 			代理模式
-			bigdecimal原理
+				静态代理
+				动态代理
+					cglib
+						AMS运行时动态生成字节码
+						不需要实现接口
+					JDK
+						必须要接口
+						效率较高
+			BigDecimal原理
+				按十进制还原为整数，并记录精度（* 10 或者 * 1000）
 			Unsafe类
-			SPI操作
+				作用
+					内存屏障
+					CAS
+					...
+			SPI
+				由服务调用者给服务提供者定义的接口
+				java中的SPI是通过反射的方式判断实现类是否实现了规定接口
 			语法糖的坑
+				编译时泛型擦除
+				运行时无法判断泛型类型
+				类泛型擦除后静态变量会关联到同一个地方 Fan<T>不同类的静态变量是一样的
+				增强for的concurrentModificationException
+
 	集合
 		list
 			ArrayList/Vector
