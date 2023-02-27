@@ -73,6 +73,8 @@ Java
 	集合
 		list
 			ArrayList/Vector
+			LinkedList
+				remove效率不如ArrayList https://www.cnblogs.com/NickyYe/p/4461454.html
 			randomAccess
 		Set
 			HashSet/LinkedHashSet/TreeSet
