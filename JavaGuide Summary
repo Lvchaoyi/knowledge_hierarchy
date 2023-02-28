@@ -77,6 +77,11 @@ Java
 	集合
 		list
 			ArrayList/Vector
+				初始化 默认空数组 +1 = 10
+				扩容
+					1.5倍
+					Integer.MAX_VALUE限制
+					ensureCapicity
 			LinkedList
 				remove效率不如ArrayList https://www.cnblogs.com/NickyYe/p/4461454.html
 			randomAccess
@@ -85,7 +90,9 @@ Java
 		Queue
 			Queue/Deque
 			ArrayDeque/LinkedList
+				垃圾LinkedList
 			PriorityQueue
+				二叉堆
 		Map
 			HashMap/HashTable
 			HashMap/TreeMap
