@@ -95,17 +95,35 @@ Java
 				二叉堆
 		Map
 			HashMap/HashTable
+				长度/线程安全/底层实现/效率/null
 			HashMap/TreeMap
 			HashSet
 			HashMap底层实现/长度2^n/遍历方式/死锁/线程安全
+				hash扰动
+				长度2^n 与运算等效于取余
+				多线程问题
+				遍历方式 https://mp.weixin.qq.com/s/zQBN3UvJDhRTKP6SzcZFKw 尽量用entrySet迭代
 			HashTable/ConcrruentHashMap
+				1.7/1.8
+					结构
+					segment去除/锁效率
+					锁实现
+				结构
+				锁粒度
 		注意事项
 			判空
 			转map
+				value不为null
 			遍历
+				iterator删除
 			fail fast
 			集合转数组
+				toArray(new T[0])
 			数组转集合
+				Arrays.asList()返回的是Arrays里的一个内部类
+				必须是对象数组
+				不能修改转化后的集合
+				用new ArrayList<>(Arrays.asList(Object[] {}))
 	源码
 		IO
 			设计模式
