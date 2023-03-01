@@ -103,9 +103,14 @@ Java
 				长度2^n 与运算等效于取余
 				多线程问题
 				遍历方式 https://mp.weixin.qq.com/s/zQBN3UvJDhRTKP6SzcZFKw 尽量用entrySet迭代
+				负载因子
+				put流程
+				get流程
+				resize
 			HashTable/ConcrruentHashMap
 				1.7/1.8
 					结构
+					并发数量
 					segment去除/锁效率
 					锁实现
 				结构
