@@ -154,14 +154,44 @@ Java
 					第二阶段数据拷贝由内核操作，并不影响进程，通过回调通知进程
 		并发
 			进程/线程/协程
+				cpu执行时间
+				上下文切换成本粒度
+				共享的资源
+					本地方法栈
+					虚拟机栈
+					程序计数器
 			多线程
 			线程生命周期
-			上下文切换
+				就绪 start
+				阻塞 synchronized
+				有限等待 sleep
+				无限等待 wait
+				死亡 system.exit()
 			死锁
+				互斥
+				请求和保持
+				不可剥夺
+				循环
+			sleep/wait/join/yield
+				sleep用于thread，当前线程不让出其占用的所有锁
+				wait用户对象，当前线程让出改对象锁
+				被调用的join线程优先执行，之后调用线程再执行
+				yield暂停当前线程
 			锁
 				乐观锁/悲观锁
 				CAS
 			JMM
+				CPU高速缓存
+				多核CPU中内存不一致
+				MESI协议
+				指令重排序
+				内存屏障
+				JMM定义
+					Java为跨平台中解决多线程指令重排问题定制的一组规范
+					本地内存/主内存
+						为了提高效率？
+				happens-before
+					JMM根据happens-before原则去禁止某种类型的指令重排序
 			volatile
 				可见性
 				禁止指令重排
