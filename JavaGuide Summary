@@ -224,12 +224,24 @@ Java
 					不支持condition通知
 			ThreadLocal
 				原理
+					ThreadLocalMap
+						存在Thread中 key为ThreadLocal引用 value为ThreadLocal存放的值
 				风险
+					内存泄漏 Thread->ThreaLocalMap->Entry->Value的强引用链不会被回收
+						手动调用remove才会清理key为null的entry
 			Atomic
 			线程池
 				参数
+					corePoolSize
+					maxPoolSize
+					阻塞队列
+					饱和策略
 				饱和策略
 				原理
+					先满足核心线程数
+					再放入阻塞队列
+					再填充最大线程数
+					再执行拒绝策略
 				大小设置
 			AQS
 				原理
