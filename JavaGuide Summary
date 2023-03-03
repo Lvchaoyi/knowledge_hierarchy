@@ -194,13 +194,34 @@ Java
 					JMM根据happens-before原则去禁止某种类型的指令重排序
 			volatile
 				可见性
+					从主存中读取
 				禁止指令重排
+					内存屏障
 				无原子性
+					不能保证多线程读取的先后顺序
 			synchronized
 				原理
+					修饰方法 方法前ACC标识
+						修饰静态方法 给class对象上锁
+						修饰实例方法 给实例对象上锁
+					修饰代码块 对象头的monitor_enter monitor_exit
 				优化
+					偏向锁
+					轻量级锁
+					重量级锁
 				synchronized/volatile
+					都是线程同步的方式
+					一个能保证线程安全一个不能
 				synchronized/reentrantLock
+					都是可重入
+					公平/非公平
+					可中断/可通知
+				ReentrantReadWriteLock
+					一把读锁一把写锁
+					共享锁/独占锁
+				StampedLock
+					不可重入
+					不支持condition通知
 			ThreadLocal
 				原理
 				风险
@@ -219,6 +240,7 @@ Java
 			乐观锁/悲观锁
 				实现/版本号/CAS
 				存在问题/ABA
+					ABA危害 https://www.cnblogs.com/yingying7/p/12573240.html
 			JMM
 				CPU模型
 				指令重排
