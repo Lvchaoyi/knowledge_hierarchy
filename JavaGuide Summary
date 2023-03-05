@@ -236,6 +236,8 @@ Java
 					maxPoolSize
 					阻塞队列
 					饱和策略
+				Executors
+					不建议使用因为各种OOM
 				饱和策略
 				原理
 					先满足核心线程数
