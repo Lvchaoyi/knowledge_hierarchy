@@ -229,54 +229,58 @@ Java
 				风险
 					内存泄漏 Thread->ThreaLocalMap->Entry->Value的强引用链不会被回收
 						手动调用remove才会清理key为null的entry
+				set
+				扩容
+				清理
+					探测式清理
+					启发式清理
 			Atomic
+				CAS + volatile支持并发度较小的情况
 			线程池
 				参数
-					corePoolSize
-					maxPoolSize
-					阻塞队列
-					饱和策略
+					重要
+						corePoolSize
+						maxPoolSize
+						阻塞队列
+							ArrayBlockingQueue
+							LinkedBlockingQueue
+							SynchronousQueue
+					不重要
+						饱和策略
+						时间单位
+						keepAliveTime
+						线程工厂
 				Executors
 					不建议使用因为各种OOM
 				饱和策略
+					丢弃
+					新开线程处理
+					异常
 				原理
 					先满足核心线程数
 					再放入阻塞队列
 					再填充最大线程数
 					再执行拒绝策略
 				大小设置
+					CPU密集型 排序计算 n + 1
+					IO密集型 文件数据读写 2n
+				注意事项
+					命名
+					加监控
 			AQS
 				原理
+					CLH队列+state计数器
 				Semaphore
+					线程共享信号量，限定一次n个线程同时执行
 				CountDownLatch
+					单次计数器，当n个线程执行完后执行await线程
 				CyclicBarrier
+					可重复计数器，当n个线程执行完调用await之后执行action动作
 		*重要*
 			乐观锁/悲观锁
 				实现/版本号/CAS
 				存在问题/ABA
 					ABA危害 https://www.cnblogs.com/yingying7/p/12573240.html
-			JMM
-				CPU模型
-				指令重排
-				JMM模型/happens-before
-				并发编程
-			线程池
-				Executor
-				ThreadPoolExecutor
-				FixedExecutor/SingleThreadExecutor/CacheThreadPool
-				ScheduledThreadPoolExecutor
-				线程池大小
-				使用场景
-				实践
-			并发容器
-				ConcurrentHashMap
-				CopyOnWriteArrayList
-				ConcurrentLinkedQueue
-				BlockingQueue
-				ConcurrentSkipListMap
-			AQS
-				原理
-				Semaphore/CountDownLatch/CyclicBarrier
 			Atomic
 				原理
 				应用场景？
@@ -295,26 +299,96 @@ Java
 			运行时数据区
 				程序计数器
 				Java虚拟机栈
+					存放方法调用的局部变量、动态链接、方法返回地址
 				本地方法栈
+					nvtive方法调用的栈
 				堆
+					新生代
+					老年代
+					方法区/永久代/元空间
 				方法区
+					1.8之后合并到元空间，减少OOM
 				运行时常量池
+					存一些整数、浮点数和符号引用，1.8之后跟着方法区合到元空间了
 				字符串常量池
+					专门存字符串，1.7之后位于堆中
 				直接内存
 			HotSpot对象
 				创建
+					类型检查
+					分配内存
+						TLAB + CAS
+					初始化零值
+					设置对象头
+					init
+
 				内存布局
+					对象头
+					数据
+					对齐填充
 				访问定位
 		垃圾回收
 			堆空间
+				新生代
+					Eden S0 S1
+				老年代
+					新生代对象超过生命周期之后放入老年代
+				永久代
+					大对象大数组之类直接扔永久代
 			内存分配回收
+
 			死亡对象判断
+				可达性分析
+				引用计数法
 			垃圾收集算法
+				标记清除
+				复制
+				标记整理
+				分代
 			垃圾收集器
+				serial
+				parNew
+				CMS
+					流程
+						初始标记
+						并发标记
+						最终标记
+						标记清楚
+					问题
+						无法处理浮动垃圾
+						内存碎片多
+					三色标记法
+						过程
+							gcroot标黑
+							相关标灰
+							不相关标白
+							清除白色
+						错误
+							漏标
+							错标
+						解决
+							类似AOP写屏障
+				G1
+					特点
+						暂停时间短
+						时间可预测
+						并发GC
+						筛选回收
+						适合内存较大、浮动垃圾多情况
+					结构
+						S E O H
+						记忆集
+						卡表
+					设置
+						预期暂停时间
+						避免手动设置比例
+
+				ZGC
 		类文件结构
 			class结构
 		类加载过程
 			类生命周期
+				
 			加载流程
 			卸载
 		类加载器
