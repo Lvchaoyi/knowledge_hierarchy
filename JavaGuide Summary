@@ -331,6 +331,9 @@ Java
 			堆空间
 				新生代
 					Eden S0 S1
+					比例 8:1:1
+					存活时间 1 << 4 - 1 = 15 也可能不是15
+
 				老年代
 					新生代对象超过生命周期之后放入老年代
 				永久代
@@ -340,6 +343,11 @@ Java
 			死亡对象判断
 				可达性分析
 				引用计数法
+				引用
+					强引用
+					软引用 用作内存敏感的缓存
+					弱引用
+					虚引用
 			垃圾收集算法
 				标记清除
 				复制
@@ -418,57 +426,159 @@ Java
 			OOM
 				-XX:+HeapDumpOnOutOfMemoryError 将OOM错误转储到物理文件中
 		JVM调优
+			Xmx Xms设置为相同避免扩容
+			xmn设置为堆大小的3/8
+
 		JDK工具
 			命令行工具
-			可视化分析工具
+				jps 查看jvm相关进程
+				jstat -gc 查看gc信息
+				jmap 查看jvm中class和对象内存使用情况
+				jstack 查看虚拟机快照
 	Java新特性
-		
+		8
+			匿名函数
+			stream
+			optional
+			date time		
 
 计算机基础
 	网络
 		常见面试题
 			TCP/UDP
 				区别
+					可靠性
+					建立连接
+					面向流和报文
+					一对一和n对n
 				适用场景
+					tcp 请求
+					udp 视频 会话 聊天
 			HTTP
 				一次请求过程
+					dns解析ip
+					tcp建立连接
+					http请求逐层包装
+					arp解析局域网寻址
+					ip解析路由转发
+					逐次拆包获得响应报文
+					解析后页面加载渲染
 				HTTP保存用户状态
+					无状态协议
+					cookie
+						客户端保存的信息
+					session
+						服务端保存的数据
+					token
+						认证令牌用于核对请求是否合法
 				URI/URL
+					URI > URL
+
 			ARP
 				MAC
 				工作原理
+					解析MAC，转发之后替换成自己的MAC
 		重要
 			OSI
+				7层协议
 			TCP/IP
-				应用层
-				传输层
-				网络层
-				网络接口层
+				4层
 			应用层协议
-				HTTP
-				Telnet
-				POP3
-				SMTP
-				FTP
-				SSH
+				HTTP 
+				Telnet 不安全会话
+				POP3 邮件 
+				SMTP 邮件
+				FTP 传文件
+				SSH 会话
 			HTTP
 			HTTPS
+				加密流程
+					对称加密内容
+					非对称加密对称加密秘钥
+					浏览器内置公钥对证书解密获得非对称加密公钥
 				TLS
 				SSL
 			HTTP版本
 				1.0
 				1.1
+					缓存
+					keep-alive tcp链接不断开
+					加了错误码
 				2.0
+					多路复用tcp连接
+					二进制解析
+					header压缩
 				3.0
+					QUIC
+						没有握手
+						0RTT能建立连接
 			HTTP状态码
+				2xx
+					200 成功
+					201 成功修改
+				3xx
+					301 永久转移
+					302 临时转移
+				4xx
+					401 没权限
+					403 forbidden
+					404 not found
+					405 方法不对
+					409 版本不对
+				5xx
+					500 服务器错误
+					502 服务没起来
+					503 服务器过载维护
+					504 请求超时 nginx配错了
 			TCP建立连接
 				三次握手
+					A请求B ACK
+					B同意A+请求A SYN + ACK
+						半连接 没有完成三次握手也可发数据
+						sync攻击 大量sync使得服务端重复发送syn + ack
+							ip限制
+							频率限制
+							减少重试
+							减少释放连接时间
+					A同意B SYN
 				四次挥手
+					A请求B断开 FIN A fin_wait_1
+					B同意A断开 ACK B close_wait A fin_wait_2
+					B请求A断开 FIN B last_ack 
+					A同意B断开 ACk A time_wait
+						2MSL
+							保证收到ACk，收不到key重发ACK请求
+							让该链接所有报文消失，防止下次出现
+						大量time_wait
+							短效连接
+								解决：减少等待时间、允许time_wait建立新链接
+				粘包
+					设计划分tcp报文的方法
+						chunked
+						content-length
+				tfo
+					首次建立连接时服务端回传了syn cookie
+					第二次客户端直接发送syn + cookie + http请求后，客户端就能返回http response
 			TCP可靠性
-				流控
-				拥塞控制
-				ARQ协议
+				连接管理
+				流控：针对端到端
+					滑动窗口
+						ARQ协议
+							停等
+							连续ARQ
+				拥塞控制：针对网络
+					慢开始 1 -> 每次翻倍
+					拥塞控制 n +1 +1
+					快重传 3次收到报文1的ack，重传报文2
+					快恢复 慢开始门限减半，窗口==慢开始门限
 			ARP协议
+				地址解析
+			同源策略
+				浏览器跨域名资源不能访问
+				解决跨域
+					iframe
+					cookie在二三级域名之间能访问
+					ajax CROS在header中添加origin和access-origin字段
 	操作系统
 		常见面试题
 			基础
