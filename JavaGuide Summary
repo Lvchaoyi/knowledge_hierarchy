@@ -658,10 +658,33 @@ Java
 		MySQL字符集
 	MySQL常见面试题
 		基础架构
+			连接器：建立连接，用户登录
+			检查器：语法检查
+			优化器：执行索引优化
+			执行器：实际执行
+			插件式存储引擎：存储数据、提供api
 		存储引擎
+			InnoDB对比MyISAM
+				外键支持
+				支持事务
+				锁级别细化
+				资源消耗大
+				索引主键为聚簇索引，非主键为辅助索引
 		索引
 		查询缓存
 		日志
+			bin log：用于主从同步
+				statement：记录单次修改的DML
+				row：详细行记录，可以反应函数和存储过程，采用了gtid之后，一般用row模式
+				gtid：全局事务唯一id，在主从切换时可以通过自动匹配gtid而省去binlog中断点
+			redo log：用顺序写代替随机写作为缓存，写满之后批量写磁盘，用于宕机恢复
+				两阶段提交：为保证数据正确性，需要redo log和bin log中数据一致
+					事务记录到redo log，状态为prepare
+					事务记录到binlog
+					redo log中数据修改为commit
+			undo log：MVVC中记录版本，用于回滚
+			retry log：从库同步bin log产生的log
+			slow log：慢查询日志
 		事务
 		锁
 		性能优化
