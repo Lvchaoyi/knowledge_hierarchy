@@ -781,7 +781,7 @@ Java
 		基本设计规范
 		字段设计规范
 			字段尽可能保证not null https://opensource.actionsky.com/20190710-mysql/
-			用timestamp和datetime存时间
+			用timestamp和datetime存时间，如果需要频繁修改则bigint比较好 https://cloud.tencent.com/developer/article/1883186
 		索引设计规范
 			索引最好不超过5个
 			禁用全文索引
