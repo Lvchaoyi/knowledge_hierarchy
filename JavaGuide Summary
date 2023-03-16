@@ -681,6 +681,9 @@ Java
 					聚集索引：叶子存数据
 					非聚集索引：叶子存主键id
 				hash：memoery引擎使用
+			其他
+				覆盖索引
+				联合索引
 			索引优化
 				最左前缀匹配
 					最左侧索引应当业务使用率高、区分度高、分布稀疏
@@ -697,11 +700,12 @@ Java
 				表加分区，让数据固化
 
 		日志
-			bin log：用于主从同步
+			bin log：用于主从同步（有bin log cache类似缓存）
 				statement：记录单次修改的DML
 				row：详细行记录，可以反应函数和存储过程，采用了gtid之后，一般用row模式
+				mixed：没有不一致的可能就用statement，有就用row
 				gtid：全局事务唯一id，在主从切换时可以通过自动匹配gtid而省去binlog中断点
-			redo log：用顺序写代替随机写作为缓存，写满之后批量写磁盘，用于宕机恢复
+			redo log：用顺序写代替随机写作为缓存，写满之后批量写磁盘，用于宕机恢复（有redo log buffer作为缓存）
 				两阶段提交：为保证数据正确性，需要redo log和bin log中数据一致
 					事务记录到redo log，状态为prepare
 					事务记录到binlog
@@ -714,7 +718,7 @@ Java
 				未提交读：无事务
 				提交读：解决脏读
 				可重复读：解决不可重复读
-					next-key lock也可解决幻读
+					next-key lock也可解决幻读（mysql已采用） https://tech.meituan.com/2014/08/20/innodb-lock.html
 				串行化：解决幻读 读时共享 写时排他
 			MVVC：在提交读和可重复读级别下的机制
 				事务中的每个操作有一定的可见范围，标识其他事务的数据是否对当前事务可见
@@ -781,7 +785,7 @@ Java
 		基本设计规范
 		字段设计规范
 			字段尽可能保证not null https://opensource.actionsky.com/20190710-mysql/
-			用timestamp和datetime存时间，如果需要频繁修改则bigint比较好 https://cloud.tencent.com/developer/article/1883186
+			用timestamp和datetime存时间（都跟时区挂钩，不太好），如果需要频繁修改或者需要查询效率则bigint比较好 https://cloud.tencent.com/developer/article/1883186
 		索引设计规范
 			索引最好不超过5个
 			禁用全文索引
@@ -791,37 +795,8 @@ Java
 		操作行为规范
 			超 100 万行的批量写 (UPDATE,DELETE,INSERT) 操作,要分批多次进行操作
 	*重要*
-		索引
-			优缺点
-			数据结构
-			索引类型
-			聚簇索引/非聚簇索引
-			覆盖索引/联合索引
-			索引下推
-			相关建议
-		日志
-			redo log
-			bin log
-			两阶段提交
-			undo log
-		事务隔离级别
-			脏读
-			不可重复读
-			幻读
-		InnoDB/MVVC
-			锁定读/非锁定读
-			MVVC实现
-			MVVC解决不可重复读
-			Next-key-lock
-		SQL执行流程
-			基本架构
-			语句执行分析
 		MySQL执行计划
 			如何分析explain结果
-
-		MySQL自增组件连续性
-		MySQL时间存储建议
-		MySQL隐式转换造成索引失效
 	Redis
 		基础
 		数据结构
