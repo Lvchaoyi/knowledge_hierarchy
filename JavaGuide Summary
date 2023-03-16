@@ -780,9 +780,16 @@ Java
 		命名规范
 		基本设计规范
 		字段设计规范
+			字段尽可能保证not null https://opensource.actionsky.com/20190710-mysql/
+			用timestamp和datetime存时间
 		索引设计规范
+			索引最好不超过5个
+			禁用全文索引
 		SQL规范
+			in 的值不要超过 500 个
+			WHERE 从句中禁止对列进行函数转换和计算
 		操作行为规范
+			超 100 万行的批量写 (UPDATE,DELETE,INSERT) 操作,要分批多次进行操作
 	*重要*
 		索引
 			优缺点
