@@ -797,15 +797,117 @@ Java
 	*重要*
 		MySQL执行计划
 			如何分析explain结果
+				type 何种类型的查询 ref range index all
+				key 用到何种索引
+				extra
+					filesort 外部文件排序
+					index 覆盖索引
+					index condition 索引下推
+
 	Redis
 		基础
+			快
+				基于内存
+				单线程模型+IO多路复用
+				数据结构优化
+			应用场景
+				消息队列
+				分布式锁
 		数据结构
+			基本
+				string
+					优化 （类似arraylist扩容）
+						获取长度O(1)
+						减少内存分配次数
+						防止缓冲区溢出
+						能够保存二进制数据
+				hash
+				set
+					应用
+						抽奖
+				zset
+					应用
+						排行榜
+				list
+			其他
+				bitmap
+					应用
+						活跃用户
+				hyperloglog
+				geospatial index
 		线程模型
+			IO多路复用将感兴趣的事件关联到事件处理器上
+			单线程原因
+				容易维护
+				瓶颈主要在IO和网络
+				多线程影响性能
+			6.0多线程（不建议开启）
+				多线程用于网络IO读写
 		内存管理
+			数据过期
+				判断
+					过期字典
+				策略
+					惰性删除：取时删除
+					定时删除：定期删一批
+				内存淘汰
+					volatile-lru
+					volatile-ttl
+					volatile-random
+					allkeys-lru
+					allkeys-random
+					no-eviction
 		持久化机制
+			AOF
+				记录命令
+				种类
+					always
+					everysecond
+					no
+				实现
+					先写内存，再写log，提高效率，有丢失风险
+				aof重写
+					开子进程遍历当前文件并转化为命令+遍历期间操作
+			RDB
+				副本备份
+				命令
+					save：阻塞
+					bgsave：子线程不阻塞 
+						copy on write，父进程和子进程共享内存，新数据由父进程另外写内存空间
+			4.0混合持久化
+				aof重写时直接用rdb+操作指令
 		事务
+			multi
+				将n个命令打包为原子操作发给server端，相当于n个命令，但是只有1个请求
+
 		性能优化
+			bigkey问题
+				发现
+					redis --bigkeys参数查找
+					分析rdb文件
+				大key集中过期
+					随机设置过期时间
+					开启惰性删除，异步延迟释放内存
+			批量操作减少网络传输
+				多使用类似mget/mset等原生命令
+				pipeline
 		生产问题
+			缓存穿透：key不存在
+				前后台校验参数
+				缓存无效key
+				布隆过滤器
+			缓存击穿：热点key过期
+				永不过期
+				预热
+				加互斥锁
+				hystrix做资源隔离，有限流db不会崩
+			缓存雪崩：大量key同时过期
+				事前：高可用-主从集群+淘汰策略+随机时间
+				事中：限流降级
+				事后：redis持久化恢复数据
+				
+
+
 		集群
 	*重要*
 		缓存读写策略
