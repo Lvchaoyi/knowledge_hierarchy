@@ -822,16 +822,33 @@ Java
 						防止缓冲区溢出
 						能够保存二进制数据
 				hash
+					类似hashmap
+					渐进式搬迁：因为redis单线程承受不了O(n)级别的rehash，所以hash底层用两个dict保存数据，负载因子超过某个值时，修改操作放到dict2（附带一个bucket的搬迁），删除查找在dict1
 				set
 					应用
 						抽奖
 				zset
+					底层
+						ziplist/跳表->结构简单，内存占用少
 					应用
+						延时队列/定时任务
 						排行榜
 				list
+					底层
+						ziplist/双向链表
+					应用
+						消息队列
+							redis挂了->rdb恢复
+							多消费者订阅->pubsub
+							消费者挂了，内存飙升
 			其他
 				bitmap
+					底层
+						一个keyhash到n个位置
+					问题
+						容易扩大范围误判
 					应用
+						垃圾邮件
 						活跃用户
 				hyperloglog
 				geospatial index
@@ -905,24 +922,94 @@ Java
 				事前：高可用-主从集群+淘汰策略+随机时间
 				事中：限流降级
 				事后：redis持久化恢复数据
-				
 
 
-		集群
+		分布式
+			集群
+				原理：一致性hash 16384个slot，单个实例可通过多次hash占有多个虚拟节点，让整个hash环分布均匀
+				gossip
+					master被认为客观下线之后，会从slave中根据offset选举出新的master
+			主从
+				流程
+					主节点fork子进程，将rdb传输给从节点
+					期间的新命令写入缓冲区
+					从节点删除所有数据，根据rdb重新写入
+					写入缓冲区的新命令
+					通过对比主从offset的差距判断同步是否完成，没有的话去缓冲区找命令或者执行全量同步
+			哨兵
+				作用
+					集群监控
+					故障转移
+					消息通知
+					配置中心
+				哨兵节点通过定期对主从节点发送ping信息，判断以及更新节点状态，并且可以选出新的节点
+			分布式锁
+				setnx
+					问题
+						原子性->采用setnx原子性命令
+						锁过期导致重复占用锁->锁续期 redission
+				redlock
+					批量向所有节点请求锁，半数通过之后获得锁的使用权
+				redission
+					watch dog 自动续期
+					pub/sub 多线程通过订阅同一个主题实现的，有可能线程饥饿
 	*重要*
 		缓存读写策略
-		基本数据结构
-			string
-			list
-			set
-			zset
-			hash
+			cache aside
+				读：先cache，读不到取db，回写cache
+				写：写db，删cache（或者先删cache，延时双删）
+				问题
+					首次数据不在cache-> 预热
+					数据频繁更新导致cache命中率降低 -> 改为更新cache+过期时间
+					数据没有强一致->加锁
+			read/write through
+				读：先cache，读不到cache服务取db，回写cache
+				写：写cache，cache服务回写db
+				问题
+					cache挂了，数据不可用->集群+rdb恢复
+			write behind
+				读：先cache，读不到cache服务取db，回写cache
+				写：写cache，cache服务异步批量回写db
 		特殊数据结构
 			bitmap
 		内存碎片
 	ES
+		原理
+			全文检索
+				term index 前缀树 FST压缩存储
+				term dict 词典 记录单词以及postion list地址
+				position list roaring map 第n块+offset 记录词出现的位置
+				联合索引
+					用 skip list/ bitset 取交集
+			结果打分
+				词频权重
+				文档权重
+			高效
+				乐观控制并发
+				倒排索引 压缩
+				分布式多节点
+				写入用大批顺序写代替随机写，先写内存，在顺序写segment，最后落盘
+		术语
+			index -> db
+			type -> table
+			document -> row
+			field -> col
+			node -> 实例
+			cluster -> multi node
+			shard -> tiny index
+			mapping -> 表结构定义
+			segment -> mini index
+		问题
+			深度分页
+				解决
+					禁止跳页+search_after：需要唯一或者组合字段标识
+					scroll：消耗大量内存
 	MongoDB
 		基础
+			应用场景
+				快速拓展，数据格式不固定
+				数据集中到某个key
+				海量低价值数据
 		存储引擎
 		聚合
 		事务
