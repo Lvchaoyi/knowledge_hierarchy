@@ -1011,11 +1011,59 @@ Java
 				数据集中到某个key
 				海量低价值数据
 		存储引擎
+			wiredTiger
+				可以设置cache size，防止OOM
+				数据压缩
+				document锁
+				结构
+					B+树
+					非聚簇索引，通过recordId关联数据
+			MMAPV1
+				mmap，极度耗内存
+				不支持压缩
+				只有库/表锁
 		聚合
-		事务
-		数据压缩
+			聚合管道
+				aggregation：类似java流操作
+			单一聚合
+				count
+				distinct
 		索引
+			普通索引
+				数组索引禁止建立联合索引
+			组合索引
+				和mysql一样遵循最左匹配和覆盖索引原则
+			部分索引
+				在普通索引上加上筛选条件
+			内嵌文档索引
+				对文档的子字段建立索引
 		高可用
+			主从
+				slave根据primary的oplog进行同步
+				不支持故障后自动切换主节点
+			replication set
+				组成
+					主节点
+					从节点 
+					仲裁节点
+				优势
+					读写分离
+					故障转移
+			sharding
+				组成
+					route server 路由服务
+					config server 存储路由配置信息
+					shard server 分片机器
+				流程
+					请求发送到mongos路由进程，读取config server信息后进行请求分发，分片的chunk达到一定大小后会进行rebalance分裂
+				分片类型
+					范围分片 适合范围查询，数据不均匀
+					hash分片 适合键值单个查询，数据均匀
+				分片key选择
+					业务相关
+					分布均匀稀疏
+					避免单调递增导致数据倾斜
+
 
 
 开发工具
