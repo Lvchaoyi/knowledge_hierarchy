@@ -1070,12 +1070,40 @@ Java
 	maven
 		核心概念
 			作用
+				项目构建
+				依赖管理
+				统一项目结构
 			坐标
+				groupId 组织公司
+				artifactId 项目名
+				version 项目版本
 			依赖
-			仓库
+				依赖适用范围：只在某个阶段需要该依赖
+					compile 默认 编译、测试、运行
+					test 测试
+					provided 编译 测试
+					runtime 运行 测试
+				依赖冲突
+					原则
+						1.路径最短优先
+						2.声明顺序优先
+					排除
+						exclusive
+			仓库	
+				本地仓库
+				远程仓库
 			生命周期
+				default
+					主要生命周期用于构建程序
+				clean
+					用于项目清理
+				site
+					由于发布站点
 			插件
+				maven本质就是插件执行框架
+				plugins比如sonar、mybatis等插件
 			多模块管理
+				一个项目可以拆分成多个子项目对应多个pom文件
 	git
 		核心概念
 			基本操作
