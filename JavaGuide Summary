@@ -1119,8 +1119,42 @@ Java
 常用框架
 	spring常见面试题
 		spring基础
+			spring就是轮子大合集
 		spring IOC
+			spring中bean的控制权交给IOC容器，所有对象在容器中初始化，由容器控制bean的生命周期
+			一般通过XML配置文件或者注解的方式控制bean
+			bean
+				spring IOC容器管理的对象，在XML定义其元数据
+				注解
+					@Component
+					@Repository
+					@Service
+					@Controller
+				@Bean和@Component区别
+					@Component修饰类 @Bean修饰方法
+					@Component通过扫描类路径自动将该类装配到IOC容器中
+					@Bean是在产生该类的方法上定义产生这个bean的方式
+					@Bean的自定义性更强，比如将第三方库的类装配到spring中（总不能在源码里加个@Component）
+				注入注解
+					@Autowired spring内置 bytype注入，会根据类型找到对应的实现类bean注入，如果有多个实现则会byName注入
+					@Resource jdk自带 默认byName注入
+				作用域
+					singleton 唯一，spring默认
+					prototype 每次获取都会创建新的
+					request 每次HTTP都会产生新的
+					session 每次来自新session都会产生新的
+				线程安全
+					单例bean确实会可能有多线程问题
+					但是大部分bean都是无状态的，比如dao， service
+				生命周期
+
+
 		spring AOP
+			基于动态代理
+				实现接口 JDK Proxy
+				没实现接口 Cglib
+			AspectJ AOP 编译时增强
+			Spring AOP 运行时增强
 		spring MVC
 		设计模式
 		spring事务
