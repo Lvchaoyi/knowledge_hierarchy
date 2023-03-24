@@ -1156,14 +1156,54 @@ Java
 			AspectJ AOP 编译时增强
 			Spring AOP 运行时增强
 		spring MVC
+			流程
+				dispatcherservlet拦截请求
+				dispatcherservlet根据uri匹配相应的controller执行
+				controller处理完请求后返回modelAndView
+				dispatcherServlet将model传给view后返回浏览器
 		设计模式
+			代理模式 AOP基于动态代理
+			单例模式 bean的作用域默认singleton
+			工厂模式 beanFactory通过工厂模式生成bean
+			装饰器模式 连接不同数据库时可以根据装饰器模式切换不同数据源
 		spring事务
+			类型
+				编程式管理 代码中手动管理事务
+				声明式事务 注解或xml文件 @Transactional
+			传播范围
+				有事务则加入，无事务则开启 默认 
+				创建新事务，挂起旧事务；无事务=默认
+				创建嵌套事务，无事务=默认
+				有事务则加入，无事务抛异常
+			隔离级别
+				类比innodb隔离级别
+			@Transactional(rollbackFor = Exception.class)
+				发生runtimeException和checkedException都会回滚
+			使用事项
+				@Transactional注释的方法被本类中无注解的方法调用会失效
+					因为aop在生成动态代理时是根据注解去生成代理类的，无注解方法对应代理类中的方法不会被增强
+				必须作用在public方法上
+		springboot
+			自动装配
+				需要装配的jar包中文件只需要按照SPI定义的标准实现就能将功能装配进springboot 比如 spring-boot-starter-data-redis只要在pom中引入就可以
+				通过@EnableAutoConfiguration开启自动装配
+
+			springboot启动流程流程
+				初始化EventPublishListener
+				发布启动事件
+				创建ApplicationContext，执行Spring的IOC容器创建，最后refresh，标识ApplicationContext初始化完成
+				发布启动成功时间
+				发布就绪事件
+
 	spring常用注解
-	*重要*
-		事务详解
-		设计模式
-		自动装配原理
+		@SpringBootApplication
+		spring bean相关
+			@Autowired 注入对象到类中
+			@Component\@Service\@Controller\@Repository\@RestController\@Bean 标识改类\方法产生bean
+			@Configuratoin 声明配置类
+
 	Mybatis常见面试题
+		#{}、${}
 
 系统设计
 	restful api
