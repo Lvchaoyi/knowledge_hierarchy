@@ -1207,23 +1207,19 @@ Java
 
 系统设计
 	restful api
-		定义
-		规范
-	软件工程
-		基本策略
-	代码命名
-		命名规则
-		常见规范
-	代码重构
-		重构时机
-		注意事项
-	单测
-		作用
-		TDD
+		定义 一切接口都是资源的状态转移
 	认证
 		RBAC
-		cookie/session
+			角色
+			用户
+			权限
 		JWT
+			组成
+				header 元数据
+				payload 实际内容
+				signature 签名
+			流程
+				client通过用户名和密码登录之后服务根据payload和header+密钥生成JWT发放给client，以后的所有请求都会携带JWT
 		SSO
 		Oauth2.0
 	JWT
