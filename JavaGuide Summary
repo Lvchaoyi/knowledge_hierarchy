@@ -1413,13 +1413,50 @@ Java
 	SQL优化
 	消息队列
 		作用
+			异步
+			削峰
+			解耦
 		问题
+			一致性问题
+			复杂度
+			可用性
 		JMS/AMQP
+			前者为java api，后者为一套标准协议
 		选型
 	Kafka
 		应用场景
+			消息队列
+			数据处理
 		对比
+			大量异步和批处理思想，性能好
+			生态好
+		结构
+			producer -> 
+			broker -> 
+			topic -> 类似数据库里的表
+			partition -> 类似于分片
+			segment -> 每个partition存放多个segment
+			consumer -> 和partition为1对n（n >= 0）
+			zk 
+				broker注册
+				topic注册
+				负载均衡
+			replica 副本集
+
 		存在问题
+			消息丢失
+				producer丢失 ack
+				broker丢失 ack = 1强制同步磁盘
+				consumer丢失 手动commit
+			重复消费
+				幂等
+				记录消费记录
+			乱序
+				单partition
+				多partition +对应数量consumer 内部hash key分发
+			消息堆积
+				单条消息 超时机制 + 降级 + 定时任务重试
+				多条 监控 + poll时间调大 + 任务改异步
 	RabbitMQ
 		队列模型/主题模型
 		架构图
