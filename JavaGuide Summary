@@ -4,28 +4,64 @@ Java
 	基础
 		概念
 			JDK/JRE
+				开发工具
+				运行环境
 			编译/解释
+				编译成机器码直接运行
+				解释成机器码，一边解释一边运行
 			字节码
+				由java解释器解释运行
+			JIT
+				运行时编译，将之前热点代码字节码对应的机器码保存下来
 			AOT
+				直接将字节码编译成机器码，为了支持ASM字节码框架的动态代理等特性，不能全用AOT提前编译
+
 		基本数据类型
 			包装类型缓存机制
-			自动装箱拆箱
+				Byte Integer Long Short -128 - 127
+				Character 0 - 127
+			自动装箱拆箱	
+				自动调用了类似Integer.valueOf(int i)或者是.intValue()方法
 			精度丢失
+				二进制小数无法完全还原十进制的精度，可以用科学计数法，x10即可
 			bigdecimal
 
 		面向对象
 			浅拷贝/深拷贝
+				前者只会复制外层对象引用，后者内部包含的对象也复制
 			==/equals()
+				地址/内容
 			hashcode()
-			String/StringBffer/StringBuilder
+				保证对象地址唯一性
+			String/StringBuffer/StringBuilder
+				
+				线程安全
+				线程不安全
 			String不可变
+				final修饰+private
 			String +/常量折叠
+				每次+String会生成新对象，但是由于常量折叠，所以"a" + "b"并不会调用拼接方法，在编译期就能得出值
+				javac编译器会把编译期间可以确定的常量自动求值后放在字符串常量池中
 		异常
+			error
+				不受控制
+			checked exception
+				runtime
+				IO
+			unchecked exception
+				NPE
+				Illegal
+				ArrayOutOfBound
 			Throwable常用方法
+				getMessage 简要信息 永远别用
+				toString 详细信息
+
 			try with resources
+				把try中的资源释放
 
 		泛型
 			泛型应用 
+				指定参数类型范围
 				自定义接口/集合类
 		注解
 			注解解析方式
