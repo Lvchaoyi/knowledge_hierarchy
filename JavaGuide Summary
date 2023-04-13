@@ -136,11 +136,19 @@ Java
 			HashSet
 			HashMap底层实现/长度2^n/遍历方式/死锁/线程安全
 				hash扰动
+					上16位 + 下16位，1.7是扰动四次
 				长度2^n 与运算等效于取余
 				多线程问题
+					同时put，数据丢失
+					同事put get 脏读旧数据
+					同时put发生rehash 头插迁移导致循环链表
 				遍历方式 https://mp.weixin.qq.com/s/zQBN3UvJDhRTKP6SzcZFKw 尽量用entrySet迭代
 				负载因子
+					0.75 泊松分布
 				put流程
+					判断table是否为空，初始化table
+					计算key hash
+					遍历链表，判断key相等，相等更新，遍历完不相等，插入一个entry
 				get流程
 				resize *2 element重新分配
 			HashTable/ConcrruentHashMap
