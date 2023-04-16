@@ -170,10 +170,11 @@ Java
 			遍历
 				iterator删除
 			fail fast
+				遍历集合时不能修改集合
 			集合转数组
 				toArray(new T[0])
 			数组转集合
-				Arrays.asList()返回的是Arrays里的一个内部类
+				Arrays.asList()返回的ArrayList其实是Arrays里的一个内部类
 				必须是对象数组
 				不能修改转化后的集合
 				用new ArrayList<>(Arrays.asList(Object[] {}))
