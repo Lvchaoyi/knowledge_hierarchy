@@ -510,28 +510,28 @@ Java
 		常见面试题
 			TCP/UDP
 				区别
-					可靠性
-					建立连接
-					面向流和报文
-					一对一和n对n
+					可靠性 tcp需要保证消息的可靠性，udp发了就发了
+					建立连接 tcp是面向连接的全双工通信，有建立连接的步骤，udp直接发就行
+					面向流和报文 udp是有报文的，tcp是面向流的？流为什么有序号，有序号和面向流（接收端不能确定边界）不冲突
+					一对一和n对n tcp是端到端 ip1 port1 ip2 port3 socket唯一确定连接 udp不是吗？udp支持单播、多播、广播
 				适用场景
 					tcp 请求
 					udp 视频 会话 聊天
 			HTTP
 				一次请求过程
-					dns解析ip
-					tcp建立连接
-					http请求逐层包装
-					arp解析局域网寻址
-					ip解析路由转发
-					逐次拆包获得响应报文
+					dns解析ip 域名->ip
+					tcp建立连接 确定两端能够进行数据传输
+					http请求逐层包装 http + tcp + ip + mac + ...
+					arp解析局域网寻址 mac1 -> mac2 -> macn 路由mac
+					ip解析路由转发 根据ip在广域网以及子网中传输
+					逐次拆包获得响应报文 client收到消息之后逐层解析
 					解析后页面加载渲染
 				HTTP保存用户状态
 					无状态协议
 					cookie
-						客户端保存的信息
+						客户端保存的信息 一堆客户端的状态信息存在一个文件
 					session
-						服务端保存的数据
+						服务端保存的数据 
 					token
 						认证令牌用于核对请求是否合法
 				URI/URL
@@ -540,12 +540,19 @@ Java
 			ARP
 				MAC
 				工作原理
-					解析MAC，转发之后替换成自己的MAC
+					解析MAC，转发之后替换成自己的MAC? yeah
 		重要
 			OSI
 				7层协议
 			TCP/IP
-				4层
+				5层
+					应用层
+						表示层
+						会话层
+					传输层 tcp
+					网络层 ip
+					数据链路层 mac
+					物理层
 			应用层协议
 				HTTP 
 				Telnet 不安全会话
@@ -595,17 +602,17 @@ Java
 					504 请求超时 nginx配错了
 			TCP建立连接
 				三次握手
-					A请求B ACK
-					B同意A+请求A SYN + ACK
+					A请求B ACK seq = n
+					B同意A+请求A SYN + ACK seq = n + 1
 						半连接 没有完成三次握手也可发数据
 						sync攻击 大量sync使得服务端重复发送syn + ack
 							ip限制
 							频率限制
 							减少重试
 							减少释放连接时间
-					A同意B SYN
+					A同意B SYN seq = n + 2
 				四次挥手
-					A请求B断开 FIN A fin_wait_1
+					A请求B断开 FIN A fin_wait_1 
 					B同意A断开 ACK B close_wait A fin_wait_2
 					B请求A断开 FIN B last_ack 
 					A同意B断开 ACk A time_wait
@@ -641,6 +648,7 @@ Java
 				解决跨域
 					iframe
 					cookie在二三级域名之间能访问
+					CROS带上header解决
 	操作系统
 		常见面试题
 			基础
