@@ -547,7 +547,7 @@ Java
 			TCP/IP
 				5层
 					应用层
-						表示层
+						表示
 						会话层
 					传输层 tcp
 					网络层 ip
@@ -723,7 +723,7 @@ Java
 		类型
 	字符集
 		常见字符集
-			ASCII
+			ASCII 
 			unicode/UTF-8
 			GB2312
 		MySQL字符集
@@ -1505,7 +1505,7 @@ Java
 			producer -> 
 			broker -> 
 			topic -> 类似数据库里的表
-			partition -> 类似于分片
+			partition -> 类似于分片 不同topic的不同partition可以处于不同broker里
 			segment -> 每个partition存放多个segment
 			consumer -> 和partition为1对n（n >= 0）
 			zk 
@@ -1561,6 +1561,16 @@ Java
 			网关
 
 
+
+question list:
+	128. hash
+	139. dp
+	148. recur
+	209. bfs
+	234. reverse
+	236. recur
+	312. dp
+	437. 前缀和
 
 
 
