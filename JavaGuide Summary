@@ -273,7 +273,7 @@ Java
 					一个能保证线程安全一个不能
 				synchronized/reentrantLock
 					都是可重入 同一个线程再次获取锁不会被阻塞，sync通过对象头的state+1标识重入，lock通过aqs中的state+1表示重入
-					公平/非公平 sync根据线程的先后顺序获取锁，aqs设置为unfair的时候，新加入的线程和队列头部的线程共同竞争锁，有可能导致饥饿
+					公平/非公平 sync是非公平锁，aqs设置为unfair的时候，新加入的线程和队列头部的线程共同竞争锁，有可能导致饥饿
 					可中断/可通知 sync不能中断，lock可以unlock释放锁？通过interrupt释放
 				ReentrantReadWriteLock
 					一把读锁一把写锁
@@ -447,7 +447,7 @@ Java
 						时间可预测
 						并发GC 和CMS一样？对的呢
 						筛选回收 根据优先级进行回收
-						适合内存较大、浮动垃圾多情况 基于复制？no，基于标记整理
+						适合内存较大、浮动垃圾多情况 基于复制？no，基于标记整理（需要进行数据在不同s，e区内的迁移，也算是有复制的流程）
 					结构
 						S E O H survive eden ？old huge 专门存大对象，防止大对象长时间放在老年代导致频繁full gc
 						记忆集 key为region，value为卡表索引集合（第n个region的第n页）
