@@ -1574,8 +1574,8 @@ Java
 question list:
 	128. hash done
 	139. dp done
-	148. recur
-	209. bfs
+	148. recur done but 注意链表结尾需要置空，防止出现循环链表
+	209. bfs done by slide window?
 	234. reverse
 	236. recur
 	312. dp
