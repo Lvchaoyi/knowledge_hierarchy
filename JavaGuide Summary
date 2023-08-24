@@ -1576,10 +1576,10 @@ question list:
 	139. dp done
 	148. recur done but 注意链表结尾需要置空，防止出现循环链表
 	209. bfs done by slide window?
-	234. reverse
-	236. recur
+	234. reverse done
+	236. recur done
 	312. dp
-	437. 前缀和
+	437. 前缀和 done
 
 
 
