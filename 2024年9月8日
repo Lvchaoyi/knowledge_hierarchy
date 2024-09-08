@@ -12,4 +12,10 @@ ES:
 
 MySQL:
 	既然mysql是先写内存再同步bin log，而redis也是进行内存操作再持久化，为什么redis就是比mysql快呢？
+	
+
+
+HBase：
+	存储格式和MySQL有什么区别？为什么能用于大数据存储？
+
 
