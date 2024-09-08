@@ -1,0 +1,15 @@
+2024年9月8日
+ES:
+	question list:
+		为什么es可以支持同个索引中的多个字段检索？
+		es的前缀树+position dictionary的检索方式和mysql的文本检索方式有什么不同？
+		直播大屏 es存几百亿数据，上t的数据量，那es的集群组成是什么样的，用什么分词器，刷盘时间是多少？
+	tip list:
+		深度分页问题
+		全文检索原理
+			前缀树+
+
+
+MySQL:
+	既然mysql是先写内存再同步bin log，而redis也是进行内存操作再持久化，为什么redis就是比mysql快呢？
+
