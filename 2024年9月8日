@@ -9,13 +9,28 @@ ES:
 		全文检索原理
 			前缀树+
 
+	priority list:
+		ES问题排查和定位
+
+
 
 MySQL:
 	既然mysql是先写内存再同步bin log，而redis也是进行内存操作再持久化，为什么redis就是比mysql快呢？
+
+	priority list:
+		不同语句加锁情况
+		组合索引案例
+		慢查询问题定位和优化案例
+
 	
 
 
 HBase：
 	存储格式和MySQL有什么区别？为什么能用于大数据存储？
+
+
+	Hbase的rowKey为什么设计成 余数:主播id 的格式？
+		1.余数是为了Hbase的数据能够均匀分布在不同region上，不会造成数据倾斜
+		2.数据都是以主播为维度，Hbase支持前缀匹配，该格式的rowKey便于scan操作
 
 
