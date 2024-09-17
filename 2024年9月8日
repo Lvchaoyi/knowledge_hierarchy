@@ -46,24 +46,44 @@ Kafka:
 Java:
 
 	question list:
-		创建线程的方式（代码）
-			new Thread
-			new Thread(Runnable)
-			new Thread(new FutureTask(Callable))
-		阻塞队列的定义以及不同种类队列的适用范围
-			array 有界；积压可控
-			link 无界；不了解消息长度
-			synchronous 低延迟；无积压
+		多线程
+			创建线程的方式（代码）
+				new Thread
+				new Thread(Runnable)
+				new Thread(new FutureTask(Callable))
+			阻塞队列的定义以及不同种类队列的适用范围
+				array 有界；积压可控
+				link 无界；不了解消息长度
+				synchronous 低延迟；无积压
 
-		线程池的参数设置规则；在业务场景中如何设置
-			cpu coret: core + 1 maxt: core + 1
-			io coret: core * 2 maxt: coret * 2 ~ 4 
-		synchronized时，线程是如何阻塞，又是如何被唤醒的
-			这都是JVM管理的
+			线程池的参数设置规则；在业务场景中如何设置
+				cpu coret: core + 1 maxt: core + 1
+				io coret: core * 2 maxt: coret * 2 ~ 4 
+			synchronized时，线程是如何阻塞，又是如何被唤醒的
+				这都是JVM管理的
 
-		volatile的有序性是如何实现的
-			通过读写屏障实现的
-		semaphore应用场景
+			volatile的有序性是如何实现的
+				通过读写屏障实现的
+			semaphore应用场景
+
+		JVM 4h
+			垃圾回收器种类
+			垃圾回收算法
+			类加载机制
+				双亲委派
+
+
+项目经历 2h
+
+
+分布式 2h
+
+
+Redis 3h
+
+
+设计模式 2h
+
 
 
 
