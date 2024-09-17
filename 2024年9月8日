@@ -37,3 +37,39 @@ HBase：
 		2.数据都是以主播为维度，Hbase支持前缀匹配，该格式的rowKey便于scan操作
 
 
+Kafka:
+	question list：
+		商品数据的kafka的broker以及parttion是如何分布的，线程池如何设计？
+		kafka的消费者数量跟线程数有关还是只跟容器数有关？
+
+
+Java:
+
+	question list:
+		创建线程的方式（代码）
+			new Thread
+			new Thread(Runnable)
+			new Thread(new FutureTask(Callable))
+		阻塞队列的定义以及不同种类队列的适用范围
+			array 有界；积压可控
+			link 无界；不了解消息长度
+			synchronous 低延迟；无积压
+
+		线程池的参数设置规则；在业务场景中如何设置
+			cpu coret: core + 1 maxt: core + 1
+			io coret: core * 2 maxt: coret * 2 ~ 4 
+		synchronized时，线程是如何阻塞，又是如何被唤醒的
+			这都是JVM管理的
+
+		volatile的有序性是如何实现的
+			通过读写屏障实现的
+		semaphore应用场景
+
+
+
+
+
+
+踩坑记录：
+	https://docs.google.com/document/d/1OPU85uOrNKOGEb7Y4Q05h4hVkyHW7qLBIsFpWcBZNT0/edit#heading=h.9gp5ayiy89h
+
