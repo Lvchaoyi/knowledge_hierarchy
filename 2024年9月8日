@@ -119,10 +119,40 @@ Java:
 项目经历 2h
 	直播大屏
 		es/kv和db的数据一致性如何保证
+			db作为兜底方案并没有强制要求一致性，只要主链路（写kv/es）没问题就行
 		不同数据源对应的业务场景，为何这么选型
-			session item分钟级数据 ES 需要商品名称模糊检索 需要按滑动窗口存储分钟级数据，而es能够支持筛选数组中的元素，类型为nested
+			直播大屏
+				session item分钟级/总览数据 ES + db 需要商品名称模糊检索 需要按滑动窗口存储分钟级数据，而es能够支持筛选数组中的元素，类型为nested
+				session 总览数据 kv + db 需要快速检索
+				session 分钟级数据 kv + db kv的key为时间戳，	
+			内部看板
+				session list 数据 ES  需要按照多个字段排序以及检索 和session总览数据一样，只是不一样的链路 sessionOverview到底存哪了？kv + es + db
+				session rank kv zset 每个维度一个key，按照权值进行排序
+
+
 		不同数据源的数据量
+			Topic 1	ls_mart.ads_session_live_insight{region} 	3k （ID）	直播间总揽数据	DB +ToC Codis + ToB Codis
+			Topic 2	ls_mart.ads_session_live_insight_mi{region}	3k（ID）	直播间分钟数据	DB +ToC Codis + ToB Codis
+			Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB
+			Topic 4	ls_mart.ads_session_item_live_insight_mi{region}	2w/s（ID）	商品分钟数据	ToC ES + DB
+
+			Update link1	限速2w/s以内	DB热备 topic 1-4的数据，限速更新，KOL的数据单独消费队列不限速
+			Update link2	>10w/s	直播间多指标展开存储更新，有写扩散，整体控制在 topic 1+2的 10倍
+			Update link3	30w/s	topic 1 + 2 + 3的数据，做延迟打点监控，内部dashboard看板，写扩散多
+			Update link4	4W/s	topic 3+4的数据update
+
 		线上问题
+		你负责什么
+			拆库拆表
+			持久化逻辑
+			后续持续优化
+		遇到什么问题
+			榜单消失 多线程对zset add del
+			kafka poll time超时
+			
+
+		如何解决
+		成效如何
 		优化迭代
 
 
