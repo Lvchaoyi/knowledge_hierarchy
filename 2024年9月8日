@@ -21,6 +21,8 @@ MySQL:
 
 	更新频繁刷新buffer pool?
 
+	两阶段提交？
+
 	priority list:
 		不同语句加锁情况
 		组合索引案例
