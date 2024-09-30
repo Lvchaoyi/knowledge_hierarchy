@@ -309,8 +309,13 @@ Java:
 	leaf会有时钟回拨问题吗
 
 	lsm tree原理
+		写内存 + 顺序写磁盘 代替 随机写磁盘
+		https://wingsxdu.com/posts/database/leveldb/#%E6%80%BB%E7%BB%93
 
 	系统在 高性能 高可用 高拓展 方面有什么优化
+		高性能 kv es hbase等存储用于应对不同的业务场景 通过kafka进行消费
+		高可用 服务本身有降级熔断 降低采样率 等策略 不同的中间件也是集群分片部署
+		高拓展 代码拓展性高，微服务组件支持快速搭建部署不同功能服务
 
 Redis 3h
 	线程模型
@@ -362,3 +367,23 @@ Redis 3h
 踩坑记录：
 	https://docs.google.com/document/d/1OPU85uOrNKOGEb7Y4Q05h4hVkyHW7qLBIsFpWcBZNT0/edit#heading=h.9gp5ayiy89h
 
+
+为什么想换工作
+最近看过什么书/源码
+
+
+订单系统负责哪个模块
+为什么订单不直接发消息
+监听bin log不一致怎么办
+订单支付失败后怎么办
+订单能不能回滚
+消息丢了怎么办
+ThreadLocal丢失数据
+spring事务隔离级别
+
+订单系统 1
+spring 2
+按题检索 3
+interview summary 4 5 6
+面试总结 7
+leetcode every day
