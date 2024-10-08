@@ -358,6 +358,10 @@ Redis 3h
 
 中间件版本、配置、架构、数据量、性能、可用性 1h
 
+业务场景
+	分布式id
+		leaf如何解决分布式id的workid和data center id?
+
 
 
 
