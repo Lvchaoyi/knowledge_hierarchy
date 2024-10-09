@@ -363,6 +363,12 @@ Redis 3h
 		leaf如何解决分布式id的workid和data center id?
 
 
+难点
+	系统可优化的话，有什么拓展性
+	leaf源码
+	
+
+
 
 
 
