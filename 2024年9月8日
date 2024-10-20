@@ -391,10 +391,27 @@ Redis 3h
 ThreadLocal丢失数据 gc会把key的弱引用回收，get的时候就get不到值了 https://cloud.tencent.com/developer/article/1563309
 spring事务隔离级别 加入事务 新创建事务 不用事务 
 
+
+分库分表怎么分，为什么这么分，为什么需要分表，为什么是16个库100张表 统计的数据量是保证 
+有哪些数据维度
+	直播总览 3k
+	直播的分钟级趋势数据 3k
+	商品的总览数据 2w
+	商品的分钟级趋势数据 2w
+	直播间基础信息 实时rpc
+	违规记录 个位数
+
+
+怎么评价自己，有什么优势，顺着团队工作的偏好说，喜欢稳定
+
+有没有其他offer 有一个xx公司的，方向差不多，但是在考虑
+
+为什么选择我们 顺着团队公司说
+
 订单系统 1 √ 
 spring 2 √
-按题检索 3
-interview summary 4 5 6
+按题检索 3 √
+interview summary 4 5 6 
 面试总结 7
 leetcode every day
 秒杀系统
