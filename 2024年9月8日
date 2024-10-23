@@ -432,3 +432,54 @@ interview summary 4 5 6
 面试总结 7
 leetcode every day
 秒杀系统
+
+
+coupang
+
+1面
+发券
+1.后台发券
+2.用户自行领券
+
+券类型
+1.平台通用券
+2.店铺券
+
+细分
+1.立减券
+2.满减券	
+
+
+数据库设计
+系统架构图
+系统的api
+
+
+
+10w用户 1w订单 单表存储 1年预估1000w数据量
+
+优惠券类型表 platform 平台/店铺 type 立减/满减 amount 优惠金额
+用户表 uid
+店铺表 shop id
+优惠券表 coupou id  platform type amount (shop id)
+优惠券库存表 coupou id count
+用户优惠券表 user coupou id uid coupou id
+订单表 order id
+订单用券数据表（每笔订单用的券 order id user coupou id
+
+2面
+文件系统
+
+创建文件/文件夹
+删除文件/文件夹
+打印文件夹下所有文件/文件夹
+编辑文件
+打印文件
+
+3面
+内存型的微博
+
+关注
+取关
+发布微博
+获取关注列表最近10条微博
