@@ -173,13 +173,25 @@ Java:
 				每日300+ 数据流转job
 				每日 6-8亿条离线宽表数据
 				实时数据 大屏峰值5w+ wps 整体msg in 10w+
+
+				实现：通过spark 监听hive表的marker，将catlog传输到kafka，通过kafka多partition横向拓展
+				问题：吞吐量高造成db负载压力过高 10w的ops，读写比2:1 基于业务需要主库读主库写，不能做读写分离
+						合并写入：直播的归单逻辑要求有查询有更新
+						限速削峰：必须马上落盘，实时性要求不能写入
+						TiDB：不能支持这么大规模数据，更大规模需要付费
+						分库分表：不适合管理大规模数据，顶配的机器写入2w
+				解决：HBase为主 8T存储，KV为辅助
 			低延迟
 				亚小时搬运亿级别数据 > 28k wps
 				直播实时指标亚秒级查询
 
+				解决：写入kv
+
 			海量数据
 				es 700e文档
 				seller center千亿文档
+
+				解决：选择合适的存储 KV实时数据 ES多维度查询数据 HBase离线数据 
 		架构演进
 			1.xxl job读hdfs
 			2.cron job读hdfs的data service api
