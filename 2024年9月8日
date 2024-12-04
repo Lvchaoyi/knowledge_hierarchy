@@ -286,14 +286,23 @@ Java:
 
 		不同数据源的数据量
 			Topic 1	ls_mart.ads_session_live_insight{region} 	3k （ID）	直播间总揽数据	DB +ToC Codis + ToB Codis
+				RealTimeSessionOverviewConsumer 主链路写 KV + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区某个维度的榜单，比如ID的GMV， order， item sold榜单，用zset  
 			Topic 2	ls_mart.ads_session_live_insight_mi{region}	3k（ID）	直播间分钟数据	DB +ToC Codis + ToB Codis
-			Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB
+				RealTimeSessionMinuteConsumer 主链路写 KV 十分钟一条数据（和mysql类似对应字段hash） + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区CCU（在线用户数）的榜单，因为要求实时数据，用zset  
+				LsInternalSessionMinuteDataConsumer 写直播开播后总观看数的（为什么不用overview数据？）
+			Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB(没看到写DB)
+				RealTimeItemOverviewConsumer 主链路写ES，用于直播间的商品列表  + LsItemLeaderboardConsumer 写kv 用于直播间的商品排行榜 + 写kv 用于记录某个地区某件商品的历史销量 + 直播下商品的overview kv LsItemAccumulateDataConsumer
 			Topic 4	ls_mart.ads_session_item_live_insight_mi{region}	2w/s（ID）	商品分钟数据	ToC ES + DB
+				主链路写ES(RealTimeItemMinuteBatchConsumer) 用于更新ES中分钟级窗口（部分指标是5分钟窗口，部分指标是全部窗口） RealTimeItemMinuteConsumer写DB，十分钟一条数据，各维度指标用Kryo序列化（理由：只有java内部使用场景，和pb以及thrift序列化性能极高，反正都是不可读，选个效率高的）
+				数据一致性（假设有校对job）
 
 			Update link1	限速2w/s以内	DB热备 topic 1-4的数据，限速更新，KOL的数据单独消费队列不限速
 			Update link2	>10w/s	直播间多指标展开存储更新，有写扩散，整体控制在 topic 1+2的 10倍
 			Update link3	30w/s	topic 1 + 2 + 3的数据，做延迟打点监控，内部dashboard看板，写扩散多
 			Update link4	4W/s	topic 3+4的数据update
+
+		Hbase存什么
+		
 
 		线上问题
 		你负责什么
@@ -433,8 +442,9 @@ lc
 
 最近看过什么书/源码
 为什么想换工作，对下一份工作有什么期望
-公司的发展前景：tt和拼多多在东南亚发力，挤占了shopee的市场份额，对公司未来前景有顾虑
 团队的业务前景：虽然有高并发大流量的系统，但是业务环节相对薄弱，希望能够接触更复杂的业务，从而实现自我提升
+晋升和薪资方面：希望承担更多的工作量和挑战，使自己的薪资上涨
+公司的发展前景：tt和拼多多在东南亚发力，挤占了shopee的市场份额，对公司未来前景有顾虑
 我希望自己在团队中能担当关键的技术角色，尤其是优化现有系统，推动其在高并发场景中的稳定性和效率。通过这样的历练，也相信能为公司和团队创造更大的价值
 你如何评价自己，什么优点、什么缺点
 优点：善于解决问题和跨团队沟通，能够尽可能地使方案落地，并且持续技术输出，保证团队产能
@@ -537,3 +547,9 @@ coupang
 取关
 发布微博
 获取关注列表最近10条微博
+
+
+hbase存储的数据格式
+如何保障代码
+分partition的消息顺序性如何保证
+重大线上问题处理
