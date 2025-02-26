@@ -123,11 +123,30 @@
 
 	jdk升级
 		https://confluence.shopee.io/pages/viewpage.action?pageId=2332565944
-		痛点
-		必要性
-		难点
-		解决
-		效果
+		原有gc配置
+		    -XX:+UseG1GC
+		    -XX:+UnlockExperimentalVMOptions 解锁实验性 JVM 选项	允许使用实验性 GC 相关参数
+		    -XX:MaxGCPauseMillis=70 目标最大 GC 暂停时间 70ms	G1 会调整回收策略，尽量满足这个暂停时间目标
+		    -XX:G1NewSizePercent=35 新生代最小占比 35%	控制新生代初始大小，提高 YGC（年轻代 GC）吞吐量
+		    -XX:G1MaxNewSizePercent=45 新生代最大占比 45%	限制新生代最大大小，防止老年代被挤占
+		    -XX:G1MixedGCLiveThresholdPercent=85 老年代对象存活率高于 85% 时不参与 Mixed GC	避免回收高存活率的区域，提高 GC 效率
+		    -XX:G1HeapWastePercent=5 允许 5% 的堆内存浪费	让 G1 保留一定的可用空间，提高回收灵活性
+		    -XX:InitiatingHeapOccupancyPercent=35 堆占用率超过 35% 时启动并发 GC	让 GC 提前介入，减少 Full GC 可能性
+		    -XX:+UseStringDeduplication 开启字符串去重	降低重复字符串的内存占用，减少堆压力
+		    -XX:+ExplicitGCInvokesConcurrent System.gc() 触发并发 GC 而非 Full GC	避免 System.gc() 造成长时间 STW
+		    -XX:+ParallelRefProcEnabled 并行处理引用	加快 GC 处理弱引用（如 SoftReference、WeakReference）
+		    -XX:MaxMetaspaceSize=368m 设置 Metaspace 最大大小 368MB	限制类元数据占用空间，防止 Metaspace OOM
+		    -XX:MetaspaceSize=368m 设置 Metaspace 初始大小 368MB	预留一定的类元数据空间，减少扩容时的开销
+		痛点 服务偶发性STW时间达到秒级 ccweb 单次gc时长长达800ms，每分钟gc时长（疏散停顿：用于对象拷贝）长达近10s （实际4~5s）每分钟平均6~8次gc
+		必要性 面向C端服务不能容忍高延迟
+		方案选型 jdk17 zgc jdk21 分代zgc，为了项目稳定性以及兼容现有中间件（spring kafka es等）版本选择了jdk17
+		难点 升级需要适配各个中间件的版本，项目稳定性需要保证
+		解决 从小型项目开始逐步升级，不同版本灰度发布
+		    -XX:+UseZGC
+		    -XX:ConcGCThreads="$con_gc_threads" 并发的线程数，越少越好，但是会影响并发阶段的耗时
+		    -XX:ParallelGCThreads="$par_gc_threads" STW的线程数，越多越好，降低暂停时间
+		    -XX:ZCollectionInterval="$zgc_interval"
+		效果 偶发性的长时间STW消失，STW时间缩短到微妙级 ccweb 单次gc最大1ms，每分钟gc时长nms，每分钟30次gc左右
 
 	数据指标
 		db占用

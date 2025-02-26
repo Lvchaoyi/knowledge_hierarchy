@@ -452,18 +452,24 @@ Java
 						S E O H survive eden ？old huge 专门存大对象，防止大对象长时间放在老年代导致频繁full gc
 						记忆集 key为region，value为卡表索引集合（第n个region的第n页）
 						卡表 相当于region的页表
+							卡表（Card Table） 是一个 全局数据结构，用于追踪 单个 Region 内存块的修改情况。
+							记忆集（RSet） 是 Region 级别的数据结构，用于记录 哪些 Region 引用了当前 Region，它的实现 依赖卡表。
+							GC 过程：
+							对象变更时，更新卡表（标记脏页）。
+							当 GC 发生时，遍历卡表，找到涉及的跨 Region 引用。
+							基于卡表信息，更新 RSet，这样扫描垃圾时就可以 仅扫描相关 Region，而不需要全堆扫描
 					设置
 						预期暂停时间
 						避免手动设置比例
 
 				ZGC
 					特点
-						通过着色指针和读屏障减少了对象复制过程中的寻址消耗，使得能够马上准确定位
+						通过着色指针和读屏障减少了对象复制转移过程中的寻址消耗，使得能够马上准确定位
 						适合低延时要求的场景，但是不适合极低延时（瓶颈在其他地方）
 					着色指针
-						64位地址中存储了其他的额外信息，让垃圾回收器准确知道对象位置
+						64位地址中存储了其他的额外信息，让垃圾回收器准确知道对象位置是否被移动
 					读屏障
-						从堆中读取引用的时候回更新指针，
+						gc发现对象的引用变更被移动了，从堆中读取引用的时候会更新指针，这样线程始终都是访问的是对象的新地址
 		类文件结构
 			class结构
 		类加载过程
@@ -482,24 +488,34 @@ Java
 				自底向上检查类加载器，自顶向下尝试加载
 				作用
 					保护原生类，避免重复加载
+					提升加载效率，父类加载过自己就不加载了
 				打破
-					重写loadClass方法
+					重写loadClass方法	
 					场景
 						tomcat不同版本应用 不用应用的jdk版本不同，tomcat打破双亲委派可以让每个web容器自己加载自己的类
 			自定义类加载器
 				场景
 					加载加密后的java class 重写findClass方法
 			自定义object类
+				非java.lang.Object可以加载，路径相同的Object类直接报nosuchmethod方法，因为会默认bootstrapclassloader加载
+
+			往java.lang里塞自定义的test类
+				光把 TestClass.class 放到 java/lang/ 目录是没用的，JVM 直接拒绝加载！
+				要么换个包名（com.test），要么用 -Xbootclasspath 作弊，让bootstrapclassloader去你指定的目录加载。
+				BootstrapClassLoader 只认 rt.jar（JDK 8）或 modules（JDK 9+），不认你手动放的 .class 文件。
+
 		JVM参数
 			堆内存相关
 				最大最小堆 xms xmx
+					相等的场景 长时间运行，确定负载压力
+					不相等  批处理 负载波动大
 			垃圾收集相关
 				-XX: +UseG1GC
 			OOM
 				-XX:+HeapDumpOnOutOfMemoryError 将OOM错误转储到物理文件中
 		JVM调优
 			Xmx Xms设置为相同避免扩容
-			xmn设置为堆大小的3/8
+			xmn设置为堆大小的3/8  在 Parallel GC（吞吐量 GC）和 CMS GC 时，设置 -Xmn = 3/8 * Xmx 确实是一种常见的经验值，g1和zgc不适用
 
 		JDK工具
 			命令行工具
@@ -507,7 +523,7 @@ Java
 				jstat -gc 查看gc信息
 				jmap 查看jvm中class和对象内存使用情况
 				jstack 查看虚拟机快照
-	Java新特性
+	Java新特性 2
 		8
 			匿名函数
 			stream
@@ -537,7 +553,7 @@ Java
 					解析后页面加载渲染
 				HTTP保存用户状态
 					无状态协议
-					cookie
+					cookie 
 						客户端保存的信息 一堆客户端的状态信息存在一个文件
 					session
 						服务端保存的数据 
@@ -567,7 +583,7 @@ Java
 				Telnet 不安全会话
 				POP3 邮件 
 				SMTP 邮件
-				FTP 传文件
+				FTP 传文件 
 				SSH 会话
 			HTTP
 			HTTPS
@@ -607,7 +623,7 @@ Java
 				5xx
 					500 服务器错误
 					502 服务没起来
-					503 服务器过载维护
+					503 服务器过载维护 
 					504 请求超时 nginx配错了
 			TCP建立连接
 				三次握手
@@ -637,7 +653,7 @@ Java
 						content-length
 				tfo
 					首次建立连接时服务端回传了syn cookie
-					第二次客户端直接发送syn + cookie + http请求后，客户端就能返回http response
+					第二次客户端直接发送syn + cookie + http请求后，客户端就能返回http response 
 			TCP可靠性
 				连接管理
 				流控：针对端到端
@@ -666,8 +682,8 @@ Java
 					用户态/内核态
 						低权限，普通用户进程所处的状态
 						高权限，可以访问几乎所有资源
-					设备管理
-					文件管理
+					设备管理 
+					文件管理 
 					进程控制
 					进程通信
 						管道 父进程fork出子进程，在内核区开辟内存，父进程留写端，子进程留读端，实现数据流写入
@@ -691,7 +707,7 @@ Java
 							每个进程有自己独立的逻辑内存空间，防止对内核以及相互之间发生干扰
 			进程/线程/协程
 				都是CPU执行一段时间的描述，区别在于时间的长短、占用的资源开销
-				多线程 线程之间会相互影响，但是上下文切换成本小，适用于CPU频繁切换计算密集场景
+				多线程 线程之间会相互影响，但是上下文切换成本小，适用于CPU频繁切换计算密集场景 
 				多进程 进程之间影响小，适用于分布式主机之间通信
 				协程 用户态的微线程，有自己的寄存器和栈
 
@@ -721,7 +737,7 @@ Java
 		红黑树
 		布隆过滤器
 			redis中布隆过滤器
-
+ 2
 数据库
 	基础知识
 		drop/delete/truncate
@@ -751,7 +767,7 @@ Java
 				资源消耗大
 				索引主键为聚簇索引，非主键为辅助索引
 		索引
-			功能分类
+			功能分类 3
 				index
 				unique
 				primary
@@ -791,7 +807,7 @@ Java
 					事务记录到binlog
 					redo log中数据修改为commit
 			undo log：MVVC中记录版本，用于回滚
-			retry log：从库同步bin log产生的log
+			retry log：从库同步bin log产生的log 4
 			slow log：慢查询日志
 		事务
 			事务隔离级别
@@ -821,7 +837,7 @@ Java
 			操作加锁
 				select MVVC 乐观锁
 				select in share mode 共享锁
-				delete/update/select for update 排他锁 innodb中update没有索引是表锁，有索引是行锁
+				delete/update/select for update 排他锁 innodb中update没有索引是表锁，有索引是行锁 5
 		DML
 			join
 				left/right/outer/inner：左全/右全/并集/交集
@@ -851,7 +867,7 @@ Java
 				水平拆分：按行拆
 					方式
 						取模
-						哈希
+						哈希 6
 						范围
 						分布式id
 							snowflake：规则
@@ -891,7 +907,7 @@ Java
 				单线程模型+IO多路复用
 				数据结构优化
 			应用场景
-				消息队列
+				消息队列 7
 				分布式锁
 		数据结构
 			基本
