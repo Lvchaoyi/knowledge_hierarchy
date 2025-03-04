@@ -148,6 +148,36 @@
 		    -XX:ZCollectionInterval="$zgc_interval"
 		效果 偶发性的长时间STW消失，STW时间缩短到微妙级 ccweb 单次gc最大1ms，每分钟gc时长nms，每分钟30次gc左右
 
+
+	hbase
+		线上问题
+			scan操作太多，cpu干限流了
+			解决
+				scan snapshot
+				合并scan操作
+				降频
+			大量bulk load触发compaction 争抢正常IO
+			解决
+				调整bulk load策略，降频限制线程数
+				
+
+	mysql问题
+		版本 5.7
+		监控团队集群维度+服务维度
+		线上负载
+			整体db综合读写比 2 ： 1 整体OPS在 70k ~ 160k左右 （都是主库）
+			qps 主从比不同集群有的是 2： 1 有的是1 ： 1
+			cc web 1k qps
+			cc job 1w qps
+			ls job 6~7w qps 24c 32g
+
+		线上配置
+		慢查询排查
+			有一些慢查询超过1s，不影响正常业务，被认为是mysql的正常抖动
+
+		线上问题
+		可用性
+
 	数据指标
 		db占用
 		es占用
