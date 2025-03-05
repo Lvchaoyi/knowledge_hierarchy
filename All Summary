@@ -159,17 +159,22 @@
 			大量bulk load触发compaction 争抢正常IO
 			解决
 				调整bulk load策略，降频限制线程数
-				
+
 
 	mysql问题
 		版本 5.7
+		集群配置 一主两从 已经从phy迁移到rds
 		监控团队集群维度+服务维度
 		线上负载
 			整体db综合读写比 2 ： 1 整体OPS在 70k ~ 160k左右 （都是主库）
 			qps 主从比不同集群有的是 2： 1 有的是1 ： 1
-			cc web 1k qps
-			cc job 1w qps
-			ls job 6~7w qps 24c 32g
+			cc web 1k qps 8c 16g 20i
+			cc job 1w qps 16c 32g 22i
+			ls job 6~7w qps 24c 32g 58i
+			id supply_db_000000xx 80g * 16 qps 直播overview大概60mb * 100 * 16 minute数据 大概1.5g * 100 * 16（每月清理）
+			id ls_db_000000xx 500g * 16 每个月25g增长 qps 主 2.8k 从 1.8k * 2 dr 2k buffer pool 50g左右
+			vn ls_db_000000xx 400g * 8
+
 
 		线上配置
 		慢查询排查
@@ -177,6 +182,14 @@
 
 		线上问题
 		可用性
+			读写分离，不需要最新数据的读取都走从库
+			索引优化、分库分表
+
+	redis
+		版本3.2
+		
+
+
 
 	数据指标
 		db占用
