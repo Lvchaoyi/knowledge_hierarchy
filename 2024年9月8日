@@ -278,21 +278,21 @@ Java:
 			直播大屏
 				session item分钟级/总览数据 ES + db 需要商品名称模糊检索 需要按滑动窗口存储分钟级数据，而es能够支持筛选数组中的元素，类型为nested
 				session 总览数据 kv + db 需要快速检索
-				session 分钟级数据 kv + db kv的key为时间戳，	
+				session 分钟级数据 kv + db kv的《hash》中的结构为views: {1111: xxx, 1112: xxx} key为时间戳，	kv设置为7天过期 不到10g
 			内部看板
 				session list 数据 ES  需要按照多个字段排序以及检索 和session总览数据一样，只是不一样的链路 sessionOverview到底存哪了？kv + es + db
 				session rank kv zset 每个维度一个key，按照权值进行排序
 
 
 		不同数据源的数据量
-			Topic 1	ls_mart.ads_session_live_insight{region} 	3k （ID）	直播间总揽数据	DB +ToC Codis + ToB Codis
+			Topic 1	ls_mart.ads_session_live_insight{region} 	3k （ID）	直播间总揽数据	DB +ToC Codis + ToB Codis  + HBASE
 				RealTimeSessionOverviewConsumer 主链路写 KV + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区某个维度的榜单，比如ID的GMV， order， item sold榜单，用zset  
-			Topic 2	ls_mart.ads_session_live_insight_mi{region}	3k（ID）	直播间分钟数据	DB +ToC Codis + ToB Codis
+			Topic 2	ls_mart.ads_session_live_insight_mi{region}	3k（ID）	直播间分钟数据	DB +ToC Codis + ToB Codis + HBASE
 				RealTimeSessionMinuteConsumer 主链路写 KV 十分钟一条数据（和mysql类似对应字段hash） + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区CCU（在线用户数）的榜单，因为要求实时数据，用zset  
 				LsInternalSessionMinuteDataConsumer 写直播开播后总观看数的（为什么不用overview数据？）
-			Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB(没看到写DB)
+			Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB(没看到写DB) + 	HBASE
 				RealTimeItemOverviewConsumer 主链路写ES，用于直播间的商品列表  + LsItemLeaderboardConsumer 写kv 用于直播间的商品排行榜 + 写kv 用于记录某个地区某件商品的历史销量 + 直播下商品的overview kv LsItemAccumulateDataConsumer
-			Topic 4	ls_mart.ads_session_item_live_insight_mi{region}	2w/s（ID）	商品分钟数据	ToC ES + DB
+			Topic 4	ls_mart.ads_session_item_live_insight_mi{region}	2w/s（ID）	商品分钟数据	ToC ES + DB + ? （应该没有写HBASE，因为这种实时数据没必要？）
 				主链路写ES(RealTimeItemMinuteBatchConsumer) 用于更新ES中分钟级窗口（部分指标是5分钟窗口，部分指标是全部窗口） RealTimeItemMinuteConsumer写DB，十分钟一条数据，各维度指标用Kryo序列化（理由：只有java内部使用场景，和pb以及thrift序列化性能极高，反正都是不可读，选个效率高的）
 				数据一致性（假设有校对job）
 
@@ -302,6 +302,15 @@ Java:
 			Update link4	4W/s	topic 3+4的数据update
 
 		Hbase存什么
+			离线数据
+				streamer * item 10T 每月0.8T ? 为什么数据这么多
+				streamer * session * munite  2T 每月0.16T 
+				streamer * session * item < 1T
+
+		kv
+			直播商品分钟级数据（榜单+分钟级） 6g 2000w key qps 2w 跟kafka能对上
+			直播分钟级数据 6g 800w key qps 3k
+
 		
 
 		线上问题

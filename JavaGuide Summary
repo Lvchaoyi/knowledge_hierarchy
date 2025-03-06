@@ -737,7 +737,7 @@ Java
 		红黑树
 		布隆过滤器
 			redis中布隆过滤器
- 2
+ 
 数据库
 	基础知识
 		drop/delete/truncate
@@ -767,7 +767,7 @@ Java
 				资源消耗大
 				索引主键为聚簇索引，非主键为辅助索引
 		索引
-			功能分类 3
+			功能分类 
 				index
 				unique
 				primary
@@ -837,7 +837,7 @@ Java
 			操作加锁
 				select MVVC 乐观锁
 				select in share mode 共享锁
-				delete/update/select for update 排他锁 innodb中update没有索引是表锁，有索引是行锁 5
+				delete/update/select for update 排他锁 innodb中update没有索引是表锁，有索引是行锁 
 		DML
 			join
 				left/right/outer/inner：左全/右全/并集/交集
@@ -867,7 +867,7 @@ Java
 				水平拆分：按行拆
 					方式
 						取模
-						哈希 6
+						哈希 
 						范围
 						分布式id
 							snowflake：规则
@@ -880,7 +880,7 @@ Java
 		命名规范
 		基本设计规范
 		字段设计规范
-			字段尽可能保证not null https://opensource.actionsky.com/20190710-mysql/
+			字段尽可能保证not null 因为null值在计算跟查询时都需要特殊处理 https://opensource.actionsky.com/20190710-mysql/
 			用timestamp和datetime存时间（都跟时区挂钩，不太好），如果需要频繁修改或者需要查询效率则bigint比较好 https://cloud.tencent.com/developer/article/1883186
 		索引设计规范
 			索引最好不超过5个
@@ -907,7 +907,7 @@ Java
 				单线程模型+IO多路复用
 				数据结构优化
 			应用场景
-				消息队列 7
+				消息队列 
 				分布式锁
 		数据结构
 			基本
@@ -922,7 +922,7 @@ Java
 					渐进式搬迁：因为redis单线程承受不了O(n)级别的rehash，所以hash底层用两个dict保存数据，负载因子超过某个值时，修改操作放到dict2（附带一个bucket的搬迁），删除查找在dict1
 				set
 					应用
-						抽奖
+						年会抽奖
 				zset
 					底层
 						ziplist/跳表->结构简单，内存占用少
@@ -1596,6 +1596,7 @@ question list:
 	236. recur done
 	312. dp
 	437. 前缀和 done
+	2588. 统计美丽子数组数目 前缀异或和 ！！！！
 
 
 
