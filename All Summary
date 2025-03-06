@@ -44,6 +44,30 @@
 	主要的技术栈有：Java全家桶（包括Spring、SpringBoot之类的），数据库包括：MySQL、Redis、MongoDB等，其他中间件的话：kafka、ElasticSearch用过一些
 
 
+	业务系统
+		creator-centor 创作者入口
+			创作者数据处理 core data bin log
+			作者推荐服务：给用户推荐作者，帮助作者涨粉
+			榜单服务：给用户展示视频排名、作者排名榜单
+			任务系统：让创作者完成一系列任务，提高创作者积极性
+			课程服务：给创作者提供课程服务，增加专业知识
+			带货数据分析：给作者提供视频带货订单分析
+			权益流量包：给作者发放流量包，失活作者召回
+		creator-market 撮合平台，创作者洽谈合作的平台
+			邀约系统：同谷歌日历
+			创作者信息维护
+			通知提醒服务
+		admin-platform
+			流量扶持：发布活动，给某些大v的视频增加流量
+			保量数据分析：数仓数据聚合筛选同步
+
+	基础服务
+		spex4j rpc服务
+		config-server 配置中心
+		data-park 数据特征标签服务
+		creator-payment 支付服务
+
+
 重点项目介绍：
 	
 	架构图/项目结构图 todo
@@ -103,6 +127,16 @@
 			替代方案：kv为辅，hbase为主
 			hbase lsm?
 			hbase使用场景
+
+		数据指标
+			ID/VN 16台46G RDS， 总计10w OPS， 读写比2：1
+			es 20亿直播间数据 700亿文档 6t存储 15k rps 12台
+		方案选型
+			mysql 因为更新特别多，会触发buffer pool频繁更新写脏页
+			hbase 因为主要需要聚合 8t存储 峰值 2g磁盘io 1g网络io
+				合理设计rowkey
+				start stop减少扫描行数
+				filter过滤数据
 
 		解决方案
 		线上问题
@@ -187,7 +221,17 @@
 
 	redis
 		版本3.2
-		
+		主从配置 1从 未启用cluster
+		allkeys lru策略
+		主从lag 1s同步
+		为什么不用集群？
+		只使用 RDB（快照），AOF 没开启。
+		但 RDB 似乎是手动触发，没有自动执行 save 规则。
+		如果 Redis 崩溃，可能会丢失最近的变更，因为 RDB 只在上次 bgsave 之后保存了数据？
+
+		线上问题？
+
+
 
 
 
