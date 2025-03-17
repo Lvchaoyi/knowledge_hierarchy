@@ -220,8 +220,9 @@
 			索引优化、分库分表
 
 	redis
+		codis
 		版本3.2
-		主从配置 1从 未启用cluster
+		主从配置 1从 未启用cluster 用sentinel进行故障转移
 		allkeys lru策略
 		主从lag 1s同步
 		为什么不用集群？
@@ -230,8 +231,94 @@
 		如果 Redis 崩溃，可能会丢失最近的变更，因为 RDB 只在上次 bgsave 之后保存了数据？
 
 		线上问题？
+		codis vs cachecloud (封装了redis，提供各种管理监控功能的一款产品)
+		Codis	3.2.6	基于redis原生，主从模式，用哨兵sentinel做故障转移	支持多db	社区已不活跃，redis版本多年无变化
+		Cachecloud	6.2.6	基于redis-cluster原生实现	只支持db0	自研产品，有专门的研发团队，支持较好
+		codis迁移到cachecloud
+		迁移策略
+
+		平台迁移：大部分集群可以通过平台自动迁移，减少业务侧的变更需求。
+		业务改造迁移：特定情况（如多 DB 集群和无密码访问集群）需要业务侧介入和代码改动。
+		迁移步骤
+
+		创建 CacheCloud 集群：与原 Codis 集群配置相同，保证平滑切换。
+		数据同步与一致性检查：确保数据在迁移过程中的完整性和一致性。
+		域名与流量切换：更新 DNS 记录和 HAProxy 配置，切换流量到新集群。
+		关闭旧集群与数据同步：完成迁移后关闭 Codis 集群和数据同步任务，确保新集群的独立运行。
+		回滚计划
+
+		准备充分的回滚策略，包括恢复旧的 DNS 设置和重启原 Codis 数据同步，确保在遇到不可预见问题时可以快速恢复服务。
+
+		copi2 vs kv store
+		自研的kv存储，兼容redis语法，基于raft进行节点同步
+
+		大key问题？
+		缓存大促时有压力吗？如何应对
+		数据量怎么样？未来如何拓展？
 
 
+curl -u 'luckyvideo.supply.creator_center_job_all:vTB1sXyj_a' -X GET "http://es.LsmPVUBu-live.ap-sg-1-general-c-General.live.dae.shopee.io:9201/_cat/allocation?v"
+
+curl -u 'luckyvideo.supply.adminserver:]G2#}eQTuw' -X GET "http://es.mcxj7b7x.ap-sg-1-general-c-general.live.dae.shopee.io:9201/_cat/allocation?v"
+
+
+	es:
+		版本
+			7.8.1
+		存储容量
+			主+副本 7t左右 空间占用1年增长了1.5t左右 集群总共220T,显示磁盘占用了33T，可能是因为删除数据（docs.deleted 显示你的索引有 超过 7.9B（79 亿）条已删除的文档）以及其他占用
+		参数调优
+			主：副本=1:1
+			异步落盘 5s异步刷translog
+			禁止使用dynamic mapping，设置为strict，避免字段数量过多
+			index_options没优化，因为好像所有字段都需要检索
+		应用场景
+			直播商品数据 直播下的商品列表排序 直播下的商品各个维度的分钟级窗口数据 （利用es能够对nested的某个子字段sum后直接排序的特性）
+			直播数据 内部看板 直播列表需要各个维度筛选
+			主播数据 内部看板 主播列表各个维度筛选
+		性能水平
+			到shard的请求分布均衡，没有热点shard
+			数据分布均衡，33个分片，每个分片大小一致
+			读写压力都不低，但以 Get Rate 为主（某个索引读取量特别高）。id地区商品分钟数大约为20k/s，其他地区像vn只有2k/s
+			CPU 负载适中（最高 69%，平均 24%~48%）。
+			Query 延迟（查询延迟）普遍较低，但偶尔有波动。一般是个位数ms级，偶尔波动到1s左右
+			Refresh Rate（刷新频率） 也比较均匀，说明 ES 的 refresh_interval 设置合理，没有导致过多的索引开销。
+		备选方案
+			ck 不适用于搜索场景
+				不适用于高频更新
+			mongo
+				搜索功能，聚合功能都不太行
+		线上问题
+			为了应对双12大流量（大约平时峰值的1.5倍）
+		性能优化
+			异步落盘 5s异步刷translog
+			批插批写 一次拉取1600条，24并发处理 get rate 380k/s index rate 261k/s
+			模型优化
+				只需要聚合不需要搜索，index设成false
+				不需要算分，Norms设成false
+				禁止使用dynamic mapping，避免字段数量过多
+				优化index_options，控制在创建索引时哪些字段会添加到倒排索引
+				根据业务需求，选择是否关闭_source 由于需要支持update, 我们这里不能关闭_source
+			路由
+				使用ES默认路由: 按文档id路由, 文档id : ${sessionId}-${itemId}
+				确保ES分片均匀的分布在各个物理节点上
+				设置合理的分片数
+			cpu和io
+				减少不必须的分词
+				避免不需要的doc_values
+				提高文档压缩率-文档写入时保证字段顺序
+				提高文档压缩率-当字段值不变或字段为0时可以不写入 
+				ES配置- refresh interval（牺牲搜索实时性） 5s刷新
+				ES配置- translog async（牺牲可靠性）勾选为true
+				根据业务需求, 选择是否使用ES自动生成的文档id 由于需要严格保证每个直播间-商品只能有1条数据，因此这里选择手动创建文档id: ${sessionId}-${itemId}
+		流量压测
+			上线前在liveish环境创建测试索引，引流live环境消息无积压消费12小时，对比es文档，观察消费情况
+			压测时，选择业务低谷期，降低对业务的影响
+			验证时，通过脚本及现成api，对正式索引和测试索引的数据进行批量验证，确保新consumer和旧consumer业务逻辑一致
+			上线时，由于商品消息消费是幂等的，因此通过先双写(新旧consumer同时写正式索引)->验证->关闭旧consumer方式来实现平滑切换。在业务低谷期按地区挨个切换，优先切换流量小的地区
+		拓展计划
+			已删除文档过多，准备定期force merge segment
+			进一步优化index_options 控制不必要的倒排索
 
 
 
