@@ -77,6 +77,8 @@
 	组件相关问题
 	
 
+
+
 	直播大屏
 		背景目标
 			卖家？需要在dashboard上查看直播的相关数据指标，包括GMV、like、item sold之类，类似与抖音直播看板
@@ -149,8 +151,63 @@
 			kol流量控制如何实现的自动增长？
 			hbase存什么
 			es存什么
-			kv存什么
+			kv存什么 实时数据，榜单
 			mysql存什么
+
+			es/kv和db的数据一致性如何保证
+				db作为兜底方案并没有强制要求一致性，只要主链路（写kv/es）没问题就行
+			不同数据源对应的业务场景，为何这么选型
+				直播大屏
+					session item分钟级/总览数据 ES + db 需要商品名称模糊检索 需要按滑动窗口存储分钟级数据，而es能够支持筛选数组中的元素，类型为nested
+					session 总览数据 kv + db 需要快速检索
+					session 分钟级数据 kv + db kv的《hash》中的结构为views: {1111: xxx, 1112: xxx} key为时间戳，	kv设置为7天过期 不到10g
+				内部看板
+					session list 数据 ES  需要按照多个字段排序以及检索 和session总览数据一样，只是不一样的链路 sessionOverview到底存哪了？kv + es + db
+					session rank kv zset 每个维度一个key，按照权值进行排序
+
+
+			不同数据源的数据量
+				Topic 1	ls_mart.ads_session_live_insight{region} 	3k （ID）	直播间总揽数据	DB +ToC Codis + ToB Codis  + HBASE
+					RealTimeSessionOverviewConsumer 主链路写 KV + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区某个维度的榜单，比如ID的GMV， order， item sold榜单，用zset  
+				Topic 2	ls_mart.ads_session_live_insight_mi{region}	3k（ID）	直播间分钟数据	DB +ToC Codis + ToB Codis + HBASE
+					RealTimeSessionMinuteConsumer 主链路写 KV 十分钟一条数据（和mysql类似对应字段hash） + 旁路写DB热备   && LsSessionLeaderboardConsumer 更新某个地区CCU（在线用户数）的榜单，因为要求实时数据，用zset  
+					LsInternalSessionMinuteDataConsumer 写直播开播后总观看数的（为什么不用overview数据？）
+				Topic 3	ls_mart.ads_session_item_live_insight{region} 	2w/s（ID）	商品总揽数据	ToC ES + DB(没看到写DB) + 	HBASE
+					RealTimeItemOverviewConsumer 主链路写ES，用于直播间的商品列表  + LsItemLeaderboardConsumer 写kv 用于直播间的商品排行榜 + 写kv 用于记录某个地区某件商品的历史销量 + 直播下商品的overview kv LsItemAccumulateDataConsumer
+				Topic 4	ls_mart.ads_session_item_live_insight_mi{region}	2w/s（ID）	商品分钟数据	ToC ES + DB + ? （应该没有写HBASE，因为这种实时数据没必要？）
+					主链路写ES(RealTimeItemMinuteBatchConsumer) 用于更新ES中分钟级窗口（部分指标是5分钟窗口，部分指标是全部窗口） RealTimeItemMinuteConsumer写DB，十分钟一条数据，各维度指标用Kryo序列化（理由：只有java内部使用场景，和pb以及thrift序列化性能极高，反正都是不可读，选个效率高的）
+					数据一致性（假设有校对job）
+
+				Update link1	限速2w/s以内	DB热备 topic 1-4的数据，限速更新，KOL的数据单独消费队列不限速
+				Update link2	>10w/s	直播间多指标展开存储更新，有写扩散，整体控制在 topic 1+2的 10倍
+				Update link3	30w/s	topic 1 + 2 + 3的数据，做延迟打点监控，内部dashboard看板，写扩散多
+				Update link4	4W/s	topic 3+4的数据update
+
+			Hbase存什么
+				离线数据
+					streamer * item 10T 每月0.8T ? 为什么数据这么多
+					streamer * session * munite  2T 每月0.16T 
+					streamer * session * item < 1T
+
+			kv
+				直播商品分钟级数据（榜单+分钟级） 6g 2000w key qps 2w 跟kafka能对上
+				直播分钟级数据 6g 800w key qps 3k
+
+			
+
+			线上问题
+			你负责什么
+				拆库拆表
+				持久化逻辑
+				后续持续优化
+			遇到什么问题
+				榜单消失 多线程对zset add del
+				kafka poll time超时
+
+
+			如何解决
+			成效如何
+			优化迭代
 
 	线上问题
 		https://confluence.shopee.io/pages/viewpage.action?pageId=1933551179
@@ -184,6 +241,12 @@
 
 
 	hbase
+		hbase版本 xx
+		content_supply__ls_streamer_item_offline 每月增长 1.5t左右 现在19.6t 有time_dim字段，分1d 7d 30d
+		content_supply__ls_session_minute_offline 每月增长 0.3t 现在3.8t
+		除此以外还有mcn的item数据，分钟直播数据，短视频数据，短视频商品数据
+		主要是一些持续增长的大批量的存量数据，存mysql不易拓展，业务场景也不需要复杂的查询条件
+		row_key设计 基本都是根据业务场景的查询范围确定，比如按streamer维度就是streamer_id % 100 _ streamer_id _
 		线上问题
 			scan操作太多，cpu干限流了
 			解决
@@ -202,6 +265,7 @@
 		线上负载
 			整体db综合读写比 2 ： 1 整体OPS在 70k ~ 160k左右 （都是主库）
 			qps 主从比不同集群有的是 2： 1 有的是1 ： 1
+			以下都是服务的容器配置
 			cc web 1k qps 8c 16g 20i
 			cc job 1w qps 16c 32g 22i
 			ls job 6~7w qps 24c 32g 58i
@@ -230,7 +294,9 @@
 		但 RDB 似乎是手动触发，没有自动执行 save 规则。
 		如果 Redis 崩溃，可能会丢失最近的变更，因为 RDB 只在上次 bgsave 之后保存了数据？
 
-		线上问题？
+		数据
+		一些实时数据包括
+
 		codis vs cachecloud (封装了redis，提供各种管理监控功能的一款产品)
 		Codis	3.2.6	基于redis原生，主从模式，用哨兵sentinel做故障转移	支持多db	社区已不活跃，redis版本多年无变化
 		Cachecloud	6.2.6	基于redis-cluster原生实现	只支持db0	自研产品，有专门的研发团队，支持较好
@@ -252,9 +318,12 @@
 		copi2 vs kv store
 		自研的kv存储，兼容redis语法，基于raft进行节点同步
 
-		大key问题？
+		线上问题
+		大key问题？ 如果一个key的大小为1MB，每秒访问量为1000，那么每秒会产生1000MB的流量。这对于普通千兆网卡的服务器来说是灾难性的。
+		规范数据类型，少用list只push的操作，设置过期时间，用del删除大key，但是4.0之前是O(n)复杂度会阻塞进程，需要写脚本分批删除
 		缓存大促时有压力吗？如何应对
-		数据量怎么样？未来如何拓展？
+		数据量怎么样？未来如何拓展？ 
+		通过Prometheus埋点监控热点Key，通过Prometheus查询接口精准过滤查询并定时更新进入本地内存，减轻redis负担，相比于全量缓存本地更加节省内存。
 
 
 curl -u 'luckyvideo.supply.creator_center_job_all:vTB1sXyj_a' -X GET "http://es.LsmPVUBu-live.ap-sg-1-general-c-General.live.dae.shopee.io:9201/_cat/allocation?v"
@@ -291,6 +360,7 @@ curl -u 'luckyvideo.supply.adminserver:]G2#}eQTuw' -X GET "http://es.mcxj7b7x.ap
 		线上问题
 			为了应对双12大流量（大约平时峰值的1.5倍）
 		性能优化
+			深度分页search after讲一讲
 			异步落盘 5s异步刷translog
 			批插批写 一次拉取1600条，24并发处理 get rate 380k/s index rate 261k/s
 			模型优化
@@ -320,6 +390,19 @@ curl -u 'luckyvideo.supply.adminserver:]G2#}eQTuw' -X GET "http://es.mcxj7b7x.ap
 			已删除文档过多，准备定期force merge segment
 			进一步优化index_options 控制不必要的倒排索
 
+
+	kafka
+		3/3为例
+		session流量 3k - 1.5w
+		商品 1w - 7w
+		订单 100 - 3k
+		总流量 4w - 14w
+		latency de生成/发送延迟都是十几秒
+		be消费也是十几秒（除no kol mysql有限流以外）
+
+		线上问题：
+		一次性拉取过多，导致消费速度过慢超时，超过max.poll.interval.ms发生rebalance，重新跟broker建立链接之后，又从原先的offset开始消费
+		相同broker，不同topic，group id设置相同,但是topic鉴权不相同，导致rebalance之后无法消费，消息堆积
 
 
 	数据指标

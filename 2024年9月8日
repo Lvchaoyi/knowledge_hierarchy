@@ -418,7 +418,10 @@ lc
 		未命中索引
 
 	redis：
+		热key问题
 		通过Prometheus埋点监控热点Key，通过Prometheus查询接口精准过滤查询并定时更新进入本地内存，减轻redis负担，相比于全量缓存本地更加节省内存。
+
+		
 
 
 	es:
@@ -430,7 +433,7 @@ lc
 				不需要算分，Norms设成false
 				禁止使用dynamic mapping，避免字段数量过多
 				优化index_options，控制在创建索引时哪些字段会添加到倒排索引
-				根据业务需求，选择是否关闭_source
+				根据业务需求，选择是否关闭_source 由于需要支持update, 我们这里不能关闭_source
 			路由
 				使用ES默认路由: 按文档id路由, 文档id : ${sessionId}-${itemId}
 				确保ES分片均匀的分布在各个物理节点上
@@ -440,9 +443,9 @@ lc
 				避免不需要的doc_values
 				提高文档压缩率-文档写入时保证字段顺序
 				提高文档压缩率-当字段值不变或字段为0时可以不写入 
-				ES配置- refresh interval（牺牲搜索实时性）
-				ES配置- translog async（牺牲可靠性）
-				根据业务需求, 选择是否使用ES自动生成的文档id
+				ES配置- refresh interval（牺牲搜索实时性） 5s刷新
+				ES配置- translog async（牺牲可靠性）勾选为true
+				根据业务需求, 选择是否使用ES自动生成的文档id 由于需要严格保证每个直播间-商品只能有1条数据，因此这里选择手动创建文档id: ${sessionId}-${itemId}
 	kafka:
 		一次性拉取过多，导致消费速度过慢超时，超过max.poll.interval.ms发生rebalance，重新跟broker建立链接之后，又从原先的offset开始消费
 		相同broker，不同topic，group id设置相同,但是topic鉴权不相同，导致rebalance之后无法消费，消息堆积
