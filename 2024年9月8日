@@ -270,6 +270,28 @@ Java:
 			PS：1.es索引设计注意点：1.单分片容量尽量不要超过20G，2.单分片doc条数硬上限20亿条
 			        2.各种复杂的分词逻辑尽量不要用es去完成，比较损耗es性能，尤其是ngram分词器或者一些第三方不可控的分词器。
 
+			ES和CK都可以做人群圈选，但各自优势不同：
+
+			CK更适合多维条件组合、高并发、海量数据实时聚合场景。典型如实时用户画像、精准营销、实时推荐、复杂圈选条件。
+			ES更适合文本搜索、模糊匹配、检索类需求场景，如日志全文搜索、商品检索、关键词模糊匹配等场景。
+			如果纯粹做人群圈选（尤其复杂圈选），CK优势明显，实际生产环境下企业更普遍采用ClickHouse来实现。
+
+			除了人群圈选还有模糊搜索的功能，其次较多为离线数据，性能要求不高
+
+			Redis：
+
+			改进 key 结构：减少 hgetall 依赖，优化 hash 结构，提高 pipeline 传输效率。
+			优化存储：调整 hash-max-ziplist 配置，避免 hash 过大影响查询效率。
+			高可用方案：双机房 Cluster 或 Proxy 方案，避免单点故障。
+			ES：
+
+			调整分片策略：如果 term match 查询居多，routing 到 userId 可能减少分片查询数。
+			优化索引：doc_values 关闭不常用字段，refresh_interval 增加至 30s 降低 merge 负担。
+			冷热数据策略：减少 hot 索引查询压力，提高 search 响应时间。
+				Elasticsearch 自动根据时间动态迁移数据的核心是 Index Lifecycle Management (ILM)，它可以按时间自动将数据从 Hot 节点迁移到 Warm/Cold 节点，并最终删除老数据（也可以不删除）
+			ClickHouse 作为 Plan B
+
+			如果后续圈选需求变复杂（如 实时计算 场景），ClickHouse 可作为优化方案。
 
 	直播大屏
 		es/kv和db的数据一致性如何保证
@@ -421,7 +443,7 @@ lc
 		热key问题
 		通过Prometheus埋点监控热点Key，通过Prometheus查询接口精准过滤查询并定时更新进入本地内存，减轻redis负担，相比于全量缓存本地更加节省内存。
 
-		
+
 
 
 	es:
