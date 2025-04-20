@@ -260,7 +260,12 @@
 		    -XX:MaxMetaspaceSize=368m 设置 Metaspace 最大大小 368MB	限制类元数据占用空间，防止 Metaspace OOM
 		    -XX:MetaspaceSize=368m 设置 Metaspace 初始大小 368MB	预留一定的类元数据空间，减少扩容时的开销
 		痛点 服务偶发性STW时间达到秒级 ccweb 单次gc时长长达800ms，每分钟gc时长（疏散停顿：用于对象拷贝）长达近10s （实际4~5s）每分钟平均6~8次gc
-		必要性 面向C端服务不能容忍高延迟
+		必要性 
+			g1的缺点：
+				老年代空间碎片严重，触发 Full GC
+				预测失败，GC 来不及回收，YGC、Mixed GC 频繁退化为 Full GC
+				回收效果差，老年代释放空间少，下一次 GC 更快触发 → GC 风暴
+			面向C端服务不能容忍高延迟
 		方案选型 jdk17 zgc jdk21 分代zgc，为了项目稳定性以及兼容现有中间件（spring kafka es等）版本选择了jdk17
 		难点 升级需要适配各个中间件的版本，项目稳定性需要保证
 		解决 从小型项目开始逐步升级，不同版本灰度发布
@@ -268,7 +273,12 @@
 		    -XX:ConcGCThreads="$con_gc_threads" 并发的线程数，越少越好，但是会影响并发阶段的耗时
 		    -XX:ParallelGCThreads="$par_gc_threads" STW的线程数，越多越好，降低暂停时间
 		    -XX:ZCollectionInterval="$zgc_interval"
-		效果 偶发性的长时间STW消失，STW时间缩短到微妙级 ccweb 单次gc最大1ms，每分钟gc时长nms，每分钟30次gc左右
+		效果 
+			偶发性的长时间STW消失，STW时间缩短到微妙级 ccweb 单次gc最大1ms，每分钟gc时长nms，每分钟30次gc左右
+			每分钟gc次数 30次->个位数7,8次
+			每分钟gc时长 4s-40s -> xxms-xxxms
+			最大gc时长 40s -> 600ms
+
 
 
 	hbase
@@ -612,3 +622,9 @@ canal的机制，mysql数据同步
 	对齐目标 站在整体业务的角度去推进项目
 	借助机制 通过项目会推进，拉齐leader推动
 
+
+待补充的部分
+	
+	服务实例动态扩缩容 
+		pod层面根据cpu io动态拓展
+		node层面当pod资源不足时动态拓展
